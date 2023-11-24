@@ -9,6 +9,7 @@ action_configs = [
     {"type": "DiscreteAction"},
     {"type": "DiscreteMetaAction"},
 ]
+#hoi iedereen
 
 @pytest.mark.parametrize("action_config", action_configs)
 def test_action_type(action_config):
