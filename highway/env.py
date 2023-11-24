@@ -1,25 +1,10 @@
 import gymnasium as gym
-import pytest
-import highway_env
 
-highway_env.register_highway_envs()
+env = gym.make("merge-v0")
 
-action_configs = [
-    {"type": "ContinuousAction"},
-    {"type": "DiscreteAction"},
-    {"type": "DiscreteMetaAction"},
-]
-#hoi iedereen
-
-@pytest.mark.parametrize("action_config", action_configs)
-def test_action_type(action_config):
-    env = gym.make("highway-v0")
-    env.configure({"action": action_config})
-    env.reset()
-    for _ in range(3):
-        action = env.action_space.sample()
-        obs, _, _, _, _ = env.step(action)
-        assert env.action_space.contains(action)
-        assert env.observation_space.contains(obs)
-    env.close()
-        
+# obs, info = env.reset()
+# done = truncated = False
+# while not (done or truncated):
+#     #action = ... # Your agent code here
+#     obs, reward, done, truncated, info = env.step(action)
+        #fhhf
