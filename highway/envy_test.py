@@ -1,8 +1,10 @@
 import gymnasium as gym
 import highway_env as env
 from matplotlib import pyplot as plt
+import highway_env
+highway_env.register_highway_envs()
 
-env = gym.make('merge-v0', render_mode='rgb_array')
+env = gym.make('merge-in-v0', render_mode='rgb_array')
 
 env.configure({
     "screen_width": 1920,
