@@ -1,6 +1,6 @@
 import cv2
 import gymnasium as gym
-import highway_env
+import highway_env_2
 from stable_baselines3 import PPO
 from sb3_contrib import TRPO
 import torch
@@ -77,7 +77,7 @@ model.set_env(env)
 #model.set_parameters(params)#, exact_match=True)
 
 print('learning....')
-model.learn(int(100000),progress_bar=True)
+model.learn(int(1000),progress_bar=True)
 print('done!')
 name = '_trpo/fixed_testtolga4small'
 model.save(situation+name)
