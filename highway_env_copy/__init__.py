@@ -3,7 +3,7 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
 from gymnasium.envs.registration import register
-print("HELLO")
+
 
 def register_highway_envs():
     """Import the envs module so that envs register themselves."""
