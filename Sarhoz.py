@@ -8,6 +8,8 @@ import cv2
 from stable_baselines3 import PPO
 from sb3_contrib import TRPO
 
+from highway_env_copy.vehicle.kinematics import Performance, Logger
+
 # Video
 frameSize = (1280,560)
 out = cv2.VideoWriter('video'+"-Merging"+'.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
@@ -66,7 +68,7 @@ def DRL_Models():
     #model_creation("TRPO")
 
     # Load model
-    #model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
+    model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
     #model = PPO.load("highway_ppo/model") #--> 12 colisions
     #model = TRPO.load("highway_trpo/model") #--> 10 colisions
 
@@ -78,8 +80,11 @@ def DRL_Models():
     "renderfps": 16
     })
 
-    pprint.pprint(env.config)
+    #pprint.pprint(env.config)
 
+    # Performance and logger
+    perfm = Performance()
+    lolly = Logger()
 
     # create a image
     number_of_collisions = 0
@@ -88,16 +93,27 @@ def DRL_Models():
     
         done = truncated = False
         obs, info = env.reset()
+        reward = 0
+        ego_car = env.controlled_vehicles[0]
+        stepcounter = 0
     
         while not (done or truncated):
             action, _states = model.predict(obs, deterministic=True)
             obs, reward, done, truncated, info = env.step(action)
+            stepcounter += 1
+            lolly.file(ego_car)
+            
             if info.get('crashed'):
                 number_of_collisions += 1
             env.render()
             cur_frame = env.render()
             out.write(cur_frame)
         T+=1
+        perfm.add_measurement(lolly)
+        lolly.clear_log()
+        print(T)
+
+    perfm.print_performance()
     print('crashrate is '+str(float(number_of_collisions)/T)+' and T is'+ str(T))
     print('number_of_collisions is:', number_of_collisions)
     print('DONE')
