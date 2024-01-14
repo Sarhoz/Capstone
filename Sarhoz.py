@@ -68,9 +68,9 @@ def DRL_Models():
     #model_creation("TRPO")
 
     # Load model
-    model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
+    # model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
     #model = PPO.load("highway_ppo/model") #--> 12 colisions
-    #model = TRPO.load("highway_trpo/model") #--> 10 colisions
+    model = TRPO.load("highway_trpo/model") #--> 10 colisions
 
     env = gym.make('merge-in-v0', render_mode='rgb_array')
     #env = gym.make('intersection-v1', render_mode='rgb_array')
@@ -88,8 +88,8 @@ def DRL_Models():
 
     # create a image
     number_of_collisions = 0
-    T = 0
-    while T <= 100:
+    T = 1
+    while T <= 20:
     
         done = truncated = False
         obs, info = env.reset()
