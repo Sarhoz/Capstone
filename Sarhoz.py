@@ -1,6 +1,6 @@
 import gymnasium as gym
 import sys
-import highway_env_copy as env
+# import highway_env_copy as env
 from matplotlib import pyplot as plt
 import pprint
 from stable_baselines3 import DQN
@@ -140,3 +140,4 @@ def DRL_Models():
     out.release()
 
 DRL_Models()
+
