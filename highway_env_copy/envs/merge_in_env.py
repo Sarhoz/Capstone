@@ -1,5 +1,6 @@
 from typing import Dict, Text
 
+from gym.envs.registration import register
 import numpy as np
 
 from highway_env_copy import utils
@@ -146,4 +147,41 @@ class MergeinEnv(AbstractEnv):
         # road.vehicles.append(merging_v)
         self.vehicle = ego_vehicle
 
+class MergeinEnvArno(MergeinEnv):
+    "new merge-in environment made by Arno"
+    @classmethod
+    def default_config(cls) -> dict:
+        cfg = super().default_config()
+        cfg.update({
+            "collision_reward": -1,
+            "right_lane_reward": 0.1,
+            "high_speed_reward": 0.2,
+            "reward_speed_range": [20, 30],
+            "merging_speed_reward": -0.5,
+            "lane_change_reward": -0.05,
+        })
+        return cfg
+
+    def _rewards(self, action: int) -> Dict[Text, float]:
+        scaled_speed = utils.lmap(self.vehicle.speed, self.config["reward_speed_range"], [0, 1])
+        return {
+            "collision_reward": self.vehicle.crashed,
+            "right_lane_reward": self.vehicle.lane_index[2] / 1,
+            "high_speed_reward": scaled_speed,
+            "lane_change_reward": action in [0, 2],
+            "merging_speed_reward": sum(  # Altruistic penalty
+                (vehicle.target_speed - vehicle.speed) / vehicle.target_speed
+                for vehicle in self.road.vehicles
+                if vehicle.lane_index == ("b", "c", 2) and isinstance(vehicle, ControlledVehicle)
+            )
+        }
     
+register(
+    id='merge-in-v0',
+    entry_point='highway_env.envs:MergeinEnv',
+)
+
+register(
+    id='merge-in-v1',
+    entry_point='highway_env.envs:MergeinEnvArno',
+)
