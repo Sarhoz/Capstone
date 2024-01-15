@@ -49,12 +49,13 @@ class MergeinEnv(AbstractEnv):
                           [0, 1])
 
     def _rewards(self, action: int) -> Dict[Text, float]:
+        print("action of reward:", action)
         scaled_speed = utils.lmap(self.vehicle.speed, self.config["reward_speed_range"], [0, 1])
         return {
             "collision_reward": self.vehicle.crashed,
             "right_lane_reward": self.vehicle.lane_index[2] / 1,
             "high_speed_reward": scaled_speed,
-            "lane_change_reward": action in [0, 2],
+            #"lane_change_reward": action in [0, 2],
             "merging_speed_reward": sum(  # Altruistic penalty
                 (vehicle.target_speed - vehicle.speed) / vehicle.target_speed
                 for vehicle in self.road.vehicles
@@ -144,3 +145,5 @@ class MergeinEnv(AbstractEnv):
         ego_vehicle.target_speed = 30
         # road.vehicles.append(merging_v)
         self.vehicle = ego_vehicle
+
+    

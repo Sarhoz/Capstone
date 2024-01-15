@@ -10,12 +10,25 @@ from sb3_contrib import TRPO
 
 from highway_env_copy.vehicle.kinematics import Performance, Logger
 
+from gymnasium.envs.registration import register
+
+
 # Video
 frameSize = (1280,560)
 out = cv2.VideoWriter('video'+"-Merging"+'.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
 
 def model_creation(model_name: str):
     env = gym.make("merge-in-v0")
+    #env = gym.make("highway-v0")
+    # DQN CAN NOT LEARN CONTINUOUS!!!
+    env.configure({
+    "action": {
+        "type": "ContinuousAction"
+    }})
+    env.reset()
+    pprint.pprint(env.config)
+
+
     if (model_name == "DQN"):
         print("DQN")
         model = DQN('MlpPolicy', env,
@@ -29,7 +42,7 @@ def model_creation(model_name: str):
               gradient_steps=1,
               target_update_interval=50,
               verbose=1,
-              tensorboard_log="highway_DQN/",
+              #tensorboard_log="highway_DQN/",
               device='cuda')
         model.learn(20000)
         model.save("highway_dqn/model")
@@ -40,7 +53,7 @@ def model_creation(model_name: str):
                 learning_rate=0.0001,
                 batch_size=32,
                 gamma=0.8,
-                tensorboard_log="highway_PPO/",
+                #tensorboard_log="highway_PPO/",
                 device='cuda')
         model.learn(20000)
         model.save("highway_ppo/model")
@@ -51,9 +64,9 @@ def model_creation(model_name: str):
              learning_rate=0.0001,
              batch_size=32,
              gamma=0.8,
-             tensorboard_log="highway_TRPO/",
+             #tensorboard_log="highway_TRPO/",
              device='cuda')
-        model.learn(20000)
+        model.learn(10)
         model.save("highway_trpo/model")
     else:
         print("Input model does not exist!")
@@ -64,7 +77,7 @@ def DRL_Models():
     # Train model 
     #model_creation("DQN")
     #model_creation("PPO")
-    #model_creation("TRPO")
+    model_creation("TRPO")
 
     # Load model
     # model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
@@ -72,14 +85,18 @@ def DRL_Models():
     model = TRPO.load("highway_trpo/model") #--> 10 colisions
 
     env = gym.make('merge-in-v0', render_mode='rgb_array')
-    #env = gym.make('intersection-v1', render_mode='rgb_array')
+    #env = gym.make('highway-v0', render_mode='rgb_array')
     env.configure({
     "screen_width": 1280,
     "screen_height": 560,
     "renderfps": 16
     })
 
-    #pprint.pprint(env.config)
+    env.configure({
+    "action": {
+        "type": "ContinuousAction"
+    }})
+    pprint.pprint(env.config)
 
     #Performance and logger
     perfm = Performance()
@@ -91,7 +108,7 @@ def DRL_Models():
     T = 1
     best_reward = -float('inf') # initialize the best reward with negative infinity
     rewards = [] #initialize list of rewards
-    while T <= 20:
+    while T <= 10:
     
         done = truncated = False
         obs, info = env.reset()

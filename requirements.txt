@@ -9,4 +9,4 @@ sb3-contrib==2.2.1
 stable-baselines3==2.2.1
 
 -f https://download.pytorch.org/whl/cu121
-torch==2.1.2+cu121
+torch==2.1.2
