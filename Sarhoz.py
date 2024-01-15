@@ -16,7 +16,6 @@ out = cv2.VideoWriter('video'+"-Merging"+'.avi', cv2.VideoWriter_fourcc(*'mp4v')
 
 def model_creation(model_name: str):
     env = gym.make("merge-in-v0")
-
     if (model_name == "DQN"):
         print("DQN")
         model = DQN('MlpPolicy', env,
@@ -82,13 +81,16 @@ def DRL_Models():
 
     #pprint.pprint(env.config)
 
-    # Performance and logger
+    #Performance and logger
     perfm = Performance()
     lolly = Logger()
 
+    
     # create a image
     number_of_collisions = 0
     T = 1
+    best_reward = -float('inf') # initialize the best reward with negative infinity
+    rewards = [] #initialize list of rewards
     while T <= 20:
     
         done = truncated = False
@@ -96,24 +98,42 @@ def DRL_Models():
         reward = 0
         ego_car = env.controlled_vehicles[0]
         stepcounter = 0
-    
+
+        total_reward = 0 # total reward for this epoch
+
         while not (done or truncated):
             action, _states = model.predict(obs, deterministic=True)
             obs, reward, done, truncated, info = env.step(action)
             stepcounter += 1
+            total_reward += reward
+
             lolly.file(ego_car)
-            
+
             if info.get('crashed'):
                 number_of_collisions += 1
             env.render()
             cur_frame = env.render()
             out.write(cur_frame)
+
+        if total_reward > best_reward:
+            best_reward = total_reward
+        rewards.append(total_reward)
         T+=1
         perfm.add_measurement(lolly)
         lolly.clear_log()
         print(T)
 
+
+    plt.plot(rewards)
+    plt.title("Rewards per run")
+    plt.xlabel('Runs')
+    plt.ylabel("Total Reward")
+    plt.show()
+
     perfm.print_performance()
+    
+    print(f'Best Reward: {best_reward}') # print best reward
+
     print('crashrate is '+str(float(number_of_collisions)/T)+' and T is'+ str(T))
     print('number_of_collisions is:', number_of_collisions)
     print('DONE')

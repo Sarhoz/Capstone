@@ -1,11 +1,11 @@
 import cv2
 import gymnasium as gym
-import highway_env_2
+import highway_env_copy
 from stable_baselines3 import PPO
 from sb3_contrib import TRPO
 import torch
 import tensorflow
-from highway_env_2.vehicle.kinematics import Performance, Logger
+from highway_env_copy.vehicle.kinematics import Performance, Logger
 
 
 situation = "intersection-v1"
