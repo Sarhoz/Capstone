@@ -1,6 +1,5 @@
 from typing import Dict, Text
 
-from gymnasium.envs.registration import register
 import numpy as np
 
 from highway_env_copy import utils
@@ -20,6 +19,8 @@ class MergeinEnv(AbstractEnv):
     It is rewarded for maintaining a high speed and avoiding collisions, but also making room for merging
     vehicles.
     """
+
+    print('default')
 
     @classmethod
     def default_config(cls) -> dict:
@@ -149,6 +150,9 @@ class MergeinEnv(AbstractEnv):
 
 class MergeinEnvArno(MergeinEnv):
     "new merge-in environment made by Arno"
+
+    print('Arno')
+
     @classmethod
     def default_config(cls) -> dict:
         cfg = super().default_config()
@@ -159,6 +163,7 @@ class MergeinEnvArno(MergeinEnv):
             "reward_speed_range": [20, 30],
             "merging_speed_reward": -0.5,
             "lane_change_reward": -0.05,
+
         })
         return cfg
 
@@ -175,13 +180,3 @@ class MergeinEnvArno(MergeinEnv):
                 if vehicle.lane_index == ("b", "c", 2) and isinstance(vehicle, ControlledVehicle)
             )
         }
-    
-register(
-    id='merge-in-v0',
-    entry_point='highway_env.envs:MergeinEnv',
-)
-
-register(
-    id='merge-in-v1',
-    entry_point='highway_env.envs:MergeinEnvArno',
-)
