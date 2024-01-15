@@ -1,0 +1,41 @@
+ The PPO with base rewards (no Tuning and DiscreteMetaAction) 
+ 
+ The average speed of 50 measurements is: 26.92672806092073 
+ The average peak jerk of 50 measurements is: 0.09033712962673342 
+ The average total jerk of 50 measurements is: 0.12202062789887219 
+ The average total distance of 50 measurements is: 22.192704285122744 
+ The average total steering of 50 measurements is: 0.06819198332603417 
+ The average duration time is of 50 measurements is: 12.42 
+ The on_lane rate of 50 measurements is: 1.0 
+ The collision rate of 50 measurements is: 0.18 
+
+[26.92672806092073, 0.09033712962673342, 0.12202062789887219, 22.192704285122744, 0.06819198332603417, 12.42, 1.0, 0.18]
+
+
+ The TRPO with base rewards (no Tuning and DiscreteMetaAction) 
+ 
+ The average speed of 50 measurements is: 20.056829466606487 
+ The average peak jerk of 50 measurements is: 0.013932570226584933 
+ The average total jerk of 50 measurements is: 0.02297568138466803 
+ The average total distance of 50 measurements is: 22.606128263315284 
+ The average total steering of 50 measurements is: 0.13097634823500276 
+ The average duration time is of 50 measurements is: 16.9 
+ The on_lane rate of 50 measurements is: 1.0 
+ The collision rate of 50 measurements is: 0.02 
+
+[20.056829466606487, 0.013932570226584933, 0.02297568138466803, 22.606128263315284, 0.13097634823500276, 16.9, 1.0, 0.02]
+
+
+ The DQN with base rewards (no Tuning and DiscreteMetaAction) 
+ 
+ The average speed of 50 measurements is: 25.600425636544593 
+ The average peak jerk of 50 measurements is: 0.017681286606253205 
+ The average total jerk of 50 measurements is: 0.08978039937868156 
+ The average total distance of 50 measurements is: 23.179391241721238 
+ The average total steering of 50 measurements is: 0.0941429618201958 
+ The average duration time is of 50 measurements is: 13.62 
+ The on_lane rate of 50 measurements is: 1.0 
+ The collision rate of 50 measurements is: 0.06 
+
+[25.600425636544593, 0.017681286606253205, 0.08978039937868156, 23.179391241721238, 0.0941429618201958, 13.62, 1.0, 0.06]
+

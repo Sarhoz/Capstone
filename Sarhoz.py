@@ -19,12 +19,12 @@ out = cv2.VideoWriter('video'+"-Merging"+'.avi', cv2.VideoWriter_fourcc(*'mp4v')
 
 def model_creation(model_name: str):
     env = gym.make("merge-in-v0")
-    #env = gym.make("highway-v0")
+
     # DQN CAN NOT LEARN CONTINUOUS!!!
-    env.configure({
-    "action": {
-        "type": "ContinuousAction"
-    }})
+    # env.configure({
+    # "action": {
+    #     "type": "ContinuousAction"
+    # }})
     env.reset()
     pprint.pprint(env.config)
 
@@ -59,14 +59,29 @@ def model_creation(model_name: str):
         model.save("highway_ppo/model")
     elif (model_name == "TRPO"):
         print("TRPO")
-        model = model = TRPO("MlpPolicy", env, 
-             verbose=1,
-             learning_rate=0.0001,
+        model = TRPO("MlpPolicy", env,
+             learning_rate=0.0003,
+             n_steps=1024,
              batch_size=32,
-             gamma=0.8,
+             gamma=0.99,
+             cg_max_steps=15,
+             cg_damping=0.1,
+             line_search_shrinking_factor=0.8,
+             line_search_max_iter=10,
+             n_critic_updates=10,
+             gae_lambda=0.95,
+             use_sde=False,
+             sde_sample_freq=-1,
+             normalize_advantage=True,
+             target_kl=0.015,
+             sub_sampling_factor=1,
+             policy_kwargs=None,
+             verbose=1,
              #tensorboard_log="highway_TRPO/",
-             device='cuda')
-        model.learn(10)
+             seed=None,
+             device='cuda',
+             _init_setup_model=True)
+        model.learn(20000)
         model.save("highway_trpo/model")
     else:
         print("Input model does not exist!")
@@ -77,25 +92,27 @@ def DRL_Models():
     # Train model 
     #model_creation("DQN")
     #model_creation("PPO")
-    model_creation("TRPO")
+    #model_creation("TRPO")
 
     # Load model
-    # model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
+    model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
     #model = PPO.load("highway_ppo/model") #--> 12 colisions
-    model = TRPO.load("highway_trpo/model") #--> 10 colisions
+    #model = TRPO.load("highway_trpo/model") #--> 10 colisions
 
     env = gym.make('merge-in-v0', render_mode='rgb_array')
-    #env = gym.make('highway-v0', render_mode='rgb_array')
-    env.configure({
-    "screen_width": 1280,
-    "screen_height": 560,
-    "renderfps": 16
-    })
 
-    env.configure({
-    "action": {
-        "type": "ContinuousAction"
-    }})
+    # env.configure({
+    # "screen_width": 1280,
+    # "screen_height": 560,
+    # "renderfps": 16
+    # })
+
+    # env.configure({
+    # "action": {
+    #     "type": "ContinuousAction"
+    # }})
+    env.reset()
+
     pprint.pprint(env.config)
 
     #Performance and logger
@@ -108,7 +125,7 @@ def DRL_Models():
     T = 1
     best_reward = -float('inf') # initialize the best reward with negative infinity
     rewards = [] #initialize list of rewards
-    while T <= 10:
+    while T <= 50:
     
         done = truncated = False
         obs, info = env.reset()
@@ -153,6 +170,15 @@ def DRL_Models():
 
     print('crashrate is '+str(float(number_of_collisions)/T)+' and T is'+ str(T))
     print('number_of_collisions is:', number_of_collisions)
+    
+    # a stand for "append"
+    with open("Performance.txt", "a") as file:
+        file.write(f"\n The DQN with base rewards (no Tuning and DiscreteMetaAction) \n \n")
+        file.write(f"{perfm.string_rep()}")
+        file.write(f"\n")
+        file.write(f"{perfm.array_rep()}")
+        file.write(f"\n\n")
+
     print('DONE')
     out.release()
 

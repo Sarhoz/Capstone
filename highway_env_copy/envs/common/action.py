@@ -132,7 +132,7 @@ class ContinuousAction(ActionType):
         if self.speed_range:
             self.controlled_vehicle.MIN_SPEED, self.controlled_vehicle.MAX_SPEED = self.speed_range
         if self.longitudinal and self.lateral:
-            print("action:",  action)
+            #print("action:",  action)
             self.controlled_vehicle.act({
                 "acceleration": utils.lmap(action[0], [-1, 1], self.acceleration_range),
                 "steering": utils.lmap(action[1], [-1, 1], self.steering_range),
