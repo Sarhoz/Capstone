@@ -23,13 +23,24 @@ class MergeinEnv(AbstractEnv):
     @classmethod
     def default_config(cls) -> dict:
         cfg = super().default_config()
-        cfg.update({
-            "collision_reward": -1,
-            "right_lane_reward": 0.1,
-            "high_speed_reward": 0.2,
-            "reward_speed_range": [20, 30],
-            "merging_speed_reward": -0.5,
-            "lane_change_reward": -0.05,
+        cfg.update({ 
+            ### TUNE
+            "collision_reward": -2, #increased penalty for collision
+            "right_lane_reward": 0.15, #slightly higher reward for right lane driving
+            "high_speed_reward": 0.3, #more incentive for high speed
+            "reward_speed_range": [20, 30], 
+            "merging_speed_reward": -0.3, # for smootg merging
+            "lane_change_reward": -0.1, #stronger penalty for lane changing
+            ### TUNE
+
+            ### BASE VALUES
+            # "collision_reward": -1,
+            # "right_lane_reward": 0.1,
+            # "high_speed_reward": 0.2,
+            # "reward_speed_range": [20, 30],
+            # "merging_speed_reward": -0.5,
+            # "lane_change_reward": -0.05,
+            ### 
         })
         return cfg
 
