@@ -278,6 +278,11 @@ class MergeinEnvSarhoz(MergeinEnv):
 
 #Salih Discrete rewards
 class MergeinEnvSalih(MergeinEnv):
+    def __init__(self, config=None):
+        print("Initializing MergeinEnvSalih")
+        super().__init__(config)
+
+    @classmethod
     def default_config(cls) -> dict:
         cfg = super().default_config()
         cfg.update({
@@ -289,6 +294,7 @@ class MergeinEnvSalih(MergeinEnv):
                 "lane_change_penalty": -0.05,
                 "ttc_reward_weight": 3 # kan wss weg als we niet gebruiken,
         })
+        return cfg
 
     def _reward(self,action):
         rewards = self._rewards(action)
