@@ -216,9 +216,9 @@ class MergeinEnvSarhoz(MergeinEnv):
         #     reward -= (self.vehicle.speed - speed_limit) / (self.vehicle.MAX_SPEED - speed_limit)
 
         if not self.vehicle.on_road:
-            reward -= 1
+            reward -= 10
         if self.vehicle.crashed:
-            reward -= 100
+            reward -= 35
         #print('time for reward')
         return reward
 

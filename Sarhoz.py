@@ -78,7 +78,7 @@ def model_creation(model_name: str):
              seed=None,
              device='cuda',
              _init_setup_model=True)
-        model.learn(10000)
+        model.learn(20000)
         model.save("highway_trpo/model-cont-Sarhoz")
     else:
         print("Input model does not exist!")
