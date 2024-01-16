@@ -15,7 +15,7 @@ frameSize = (1280,560)
 out = cv2.VideoWriter('video'+"-Merging"+'.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
 
 def model_creation(model_name: str):
-    env = gym.make("merge-in-v0")
+    env = gym.make("merge-in-v1")
     if (model_name == "DQN"):
         print("DQN")
         model = DQN('MlpPolicy', env,
@@ -62,16 +62,16 @@ def model_creation(model_name: str):
 def DRL_Models():
     
     # Train model 
-    #model_creation("DQN")
-    #model_creation("PPO")
-    model_creation("TRPO")
+    # model_creation("DQN")
+    # model_creation("PPO")
+    # model_creation("TRPO")
 
     # Load model
     # model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
     #model = PPO.load("highway_ppo/model") #--> 12 colisions
     model = TRPO.load("highway_trpo/model") #--> 10 colisions
 
-    env = gym.make('merge-in-v0', render_mode='rgb_array')
+    env = gym.make('merge-in-v1', render_mode='rgb_array')
     #env = gym.make('intersection-v1', render_mode='rgb_array')
     env.configure({
     "screen_width": 1280,
@@ -104,6 +104,7 @@ def DRL_Models():
         while not (done or truncated):
             action, _states = model.predict(obs, deterministic=True)
             obs, reward, done, truncated, info = env.step(action)
+            print(reward)
             stepcounter += 1
             total_reward += reward
 
