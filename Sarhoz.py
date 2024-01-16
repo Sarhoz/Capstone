@@ -10,27 +10,24 @@ from sb3_contrib import TRPO
 
 from highway_env_copy.vehicle.kinematics import Performance, Logger
 
-from gymnasium.envs.registration import register
-
 
 # Video
 frameSize = (1280,560)
 out = cv2.VideoWriter('video'+"-Merging"+'.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
 
-def model_creation(model_name: str):
-    env = gym.make("merge-in-v0")
+# Create enviromenent
+env = gym.make("merge-in-v2", render_mode = "rgb_array")
+#env = gym.make("highway-v0")
+    
 
-    # DQN CAN NOT LEARN CONTINUOUS!!!
-    # env.configure({
-    # "action": {
-    #     "type": "ContinuousAction"
-    # }})
+def model_creation(model_name: str):
+    
     env.reset()
     pprint.pprint(env.config)
 
-
     if (model_name == "DQN"):
         print("DQN")
+        # DQN CAN NOT LEARN CONTINUOUS!!!
         model = DQN('MlpPolicy', env,
               policy_kwargs=dict(net_arch=[256, 256]),
               learning_rate=5e-4,
@@ -62,7 +59,7 @@ def model_creation(model_name: str):
         model = TRPO("MlpPolicy", env,
              learning_rate=0.0003,
              n_steps=1024,
-             batch_size=32,
+             batch_size=64,
              gamma=0.99,
              cg_max_steps=15,
              cg_damping=0.1,
@@ -81,8 +78,8 @@ def model_creation(model_name: str):
              seed=None,
              device='cuda',
              _init_setup_model=True)
-        model.learn(20000)
-        model.save("highway_trpo/model")
+        model.learn(10000)
+        model.save("highway_trpo/model-cont-Sarhoz")
     else:
         print("Input model does not exist!")
 
@@ -92,25 +89,19 @@ def DRL_Models():
     # Train model 
     #model_creation("DQN")
     #model_creation("PPO")
-    #model_creation("TRPO")
+    model_creation("TRPO")
 
     # Load model
-    model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
+    #model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
     #model = PPO.load("highway_ppo/model") #--> 12 colisions
-    #model = TRPO.load("highway_trpo/model") #--> 10 colisions
+    model = TRPO.load("highway_trpo/model-Sarhoz") #--> 10 colisions
 
-    env = gym.make('merge-in-v0', render_mode='rgb_array')
+    env.configure({
+    "screen_width": 1280,
+    "screen_height": 560,
+    "renderfps": 16
+    })
 
-    # env.configure({
-    # "screen_width": 1280,
-    # "screen_height": 560,
-    # "renderfps": 16
-    # })
-
-    # env.configure({
-    # "action": {
-    #     "type": "ContinuousAction"
-    # }})
     env.reset()
 
     pprint.pprint(env.config)
@@ -125,7 +116,7 @@ def DRL_Models():
     T = 1
     best_reward = -float('inf') # initialize the best reward with negative infinity
     rewards = [] #initialize list of rewards
-    while T <= 50:
+    while T <= 100:
     
         done = truncated = False
         obs, info = env.reset()
@@ -173,7 +164,7 @@ def DRL_Models():
     
     # a stand for "append"
     with open("Performance.txt", "a") as file:
-        file.write(f"\n The DQN with base rewards (no Tuning and DiscreteMetaAction) \n \n")
+        file.write(f"\n The TRPO with base rewards (no Tuning and ContiniousAction) -- 100 runs -- merge \n \n")
         file.write(f"{perfm.string_rep()}")
         file.write(f"\n")
         file.write(f"{perfm.array_rep()}")

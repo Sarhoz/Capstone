@@ -39,3 +39,16 @@
 
 [25.600425636544593, 0.017681286606253205, 0.08978039937868156, 23.179391241721238, 0.0941429618201958, 13.62, 1.0, 0.06]
 
+
+ The TRPO with base rewards (no Tuning and DiscreteMetaAction) -- 800 runs 
+ 
+ The average speed of 800 measurements is: 20.025570652845925 
+ The average peak jerk of 800 measurements is: 0.021210727824160714 
+ The average total jerk of 800 measurements is: 0.03080040366833087 
+ The average total distance of 800 measurements is: 22.423347988310184 
+ The average total steering of 800 measurements is: 0.13138340715065422 
+ The average duration time is of 800 measurements is: 16.7825 
+ The on_lane rate of 800 measurements is: 1.0 
+ The collision rate of 800 measurements is: 0.06375 
+
+[20.025570652845925, 0.021210727824160714, 0.03080040366833087, 22.423347988310184, 0.13138340715065422, 16.7825, 1.0, 0.06375]

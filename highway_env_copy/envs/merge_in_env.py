@@ -8,6 +8,8 @@ from highway_env_copy.road.lane import LineType, StraightLane, SineLane
 from highway_env_copy.road.road import Road, RoadNetwork
 from highway_env_copy.vehicle.controller import ControlledVehicle
 from highway_env_copy.vehicle.objects import Obstacle
+# added
+from highway_env.envs.common.observation import TimeToCollisionObservation, KinematicObservation
 
 
 class MergeinEnv(AbstractEnv):
@@ -57,7 +59,7 @@ class MergeinEnv(AbstractEnv):
             "collision_reward": self.vehicle.crashed,
             "right_lane_reward": self.vehicle.lane_index[2] / 1,
             "high_speed_reward": scaled_speed,
-            "lane_change_reward": action in [0, 2],
+            #"lane_change_reward": action in [0, 2],
             "merging_speed_reward": sum(  # Altruistic penalty
                 (vehicle.target_speed - vehicle.speed) / vehicle.target_speed
                 for vehicle in self.road.vehicles
@@ -180,3 +182,98 @@ class MergeinEnvArno(MergeinEnv):
                 if vehicle.lane_index == ("b", "c", 2) and isinstance(vehicle, ControlledVehicle)
             )
         }
+    
+    # Sarhoz
+class MergeinEnvSarhoz(MergeinEnv):
+    @classmethod
+    def default_config(cls) -> dict:
+        config = super().default_config()
+        config.update({
+                "observation": {
+                "type": "Kinematics"},
+                "action": {
+                "type": "ContinuousAction",
+                "longitudinal": True,
+                "lateral": True,
+                "target_speeds": [20, 30],
+                "other_vehicles": 9
+                },
+                "other_vehicles": 9,
+                "collision_reward": -1,
+                "lane_centering_cost": 4,
+                "lane_centering_reward": 1})
+            
+        return config
+        
+    def _reward(self, action: np.ndarray) -> float:
+        reward = 0
+        rewards = self._rewards(action)
+        reward_weights = {'safety': 0.50, 'comfort': 0.25, 'efficiency': 0.25}
+        for key in rewards.keys():
+            reward += reward_weights[key] * rewards[key]
+        # apply the penalties for not abiding by the rules
+        # if self.vehicle.speed > speed_limit:
+        #     reward -= (self.vehicle.speed - speed_limit) / (self.vehicle.MAX_SPEED - speed_limit)
+
+        if not self.vehicle.on_road:
+            reward -= 1
+        if self.vehicle.crashed:
+            reward -= 100
+        #print('time for reward')
+        return reward
+
+        
+    def _rewards(self, action: np.ndarray) -> Dict[Text, float]:
+        #(2 * self.vehicle.speed) / (
+        #        self.vehicle.MAX_SPEED - self.vehicle.MIN_SPEED)  # max speed returns a reward of 1
+        TTC = None
+        obs_matrix = KinematicObservation(self, absolute=False, vehicles_count=self.config["other_vehicles"], normalize=False).observe()
+        use_TTC = False
+        glob_TTC = float('inf')
+        for vehicle in range(1,len(obs_matrix)):
+            x_pos = obs_matrix[vehicle][1]
+            y_pos = -1 * obs_matrix[vehicle][2]
+            pos_vec = [x_pos, y_pos] # this is relative when absolute = False
+            vx = obs_matrix[vehicle][3]
+            vy = -1 * obs_matrix[vehicle][4]
+            vel_vec = [vx, vy]
+            if np.dot(pos_vec, pos_vec) != 0:
+                proj_pos_vel = np.multiply(np.dot(vel_vec, pos_vec) / np.dot(pos_vec, pos_vec), pos_vec)
+                len_pos = np.linalg.norm(pos_vec)
+                len_proj = np.linalg.norm(proj_pos_vel)
+
+                if proj_pos_vel[0] * vel_vec[0] > 0 and proj_pos_vel[1] * vel_vec[1] > 0: # collinear so TTC infinite
+                    TTC = float('Inf')
+                else: 
+                    TTC = len_pos / len_proj  
+            else:
+                TTC = float('Inf')          
+            if TTC > 0: # just to be safe
+                glob_TTC = min(glob_TTC, TTC)
+        #print(glob_TTC)    
+        if glob_TTC < 3: # only care about TTC if crash is close
+            use_TTC = True
+
+
+        _, lateral = self.vehicle.lane.local_coordinates(self.vehicle.position)
+        if not use_TTC:   
+        # all reward components are normalized (in range 0 to 1) and we take the weighted average of them in _reward
+            safety_reward = 1 / (1 + self.config["lane_centering_cost"] * lateral ** 2) 
+        else:
+            #(1 + self.config["lane_centering_cost"] * lateral ** 2)
+            safety_reward = 0.8 * (1 - 2 / TTC) + 0.2 * 1 / (1 + self.config["lane_centering_cost"] * lateral ** 2) 
+            #(1 + 4 * self.vehicle.lane.distance(self.vehicle.position) ** 2) 
+        speed_limit = 10
+        if self.vehicle.speed <= speed_limit:
+            efficiency_reward = self.vehicle.speed / speed_limit
+        else:
+            efficiency_reward = 1 - self.vehicle.speed / (self.vehicle.MAX_SPEED)
+
+
+        comfort_reward = 1 - self.vehicle.jerk
+        rewards_keys = ['safety', 'comfort', 'efficiency']
+        rewards_values = [safety_reward, comfort_reward, efficiency_reward]
+        return dict(zip(rewards_keys, rewards_values))
+
+
+
