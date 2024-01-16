@@ -278,9 +278,10 @@ class MergeinEnvSarhoz(MergeinEnv):
 
 #Salih Discrete rewards
 class MergeinEnvSalih(MergeinEnv):
-    def __init__(self, config=None):
+    def __init__(self, config=None, render_mode=None):
         print("Initializing MergeinEnvSalih")
         super().__init__(config)
+        self.render_mode = render_mode
 
     @classmethod
     def default_config(cls) -> dict:

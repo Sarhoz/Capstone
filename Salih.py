@@ -79,7 +79,7 @@ def DRL_Models():
     "renderfps": 16
     })
 
-    #pprint.pprint(env.config)
+    pprint.pprint(env.config)
 
     #Performance and logger
     perfm = Performance()
