@@ -276,4 +276,82 @@ class MergeinEnvSarhoz(MergeinEnv):
         return dict(zip(rewards_keys, rewards_values))
 
 
+#Salih Discrete rewards
+class MergeinEnvSalih(MergeinEnv):
+    def default_config(cls) -> dict:
+        cfg = super().default_config()
+        cfg.update({
+                "collision_penalty": -1,
+                "right_lane_reward": 0.1,
+                "high_speed_reward": 0.2,
+                "reward_speed_range": [20, 30],
+                "merging_speed_penalty": -0.5,
+                "lane_change_penalty": -0.05,
+                "ttc_reward_weight": 3 # kan wss weg als we niet gebruiken,
+        })
+
+    def _reward(self,action):
+        rewards = self._rewards(action)
+
+        ttc_reward = rewards["ttc_reward"]
+        collision_penalty = rewards["collision_penalty"]
+        lane_change_penalty = rewards["lane_change_penalty"]
+        high_speed_reward = rewards["high_speed_reward"]
+        right_lane_reward = rewards["right_lane_reward"]
+
+        reward = (
+            ttc_reward
+            + collision_penalty
+            + lane_change_penalty
+            + high_speed_reward
+            + right_lane_reward
+        )
+
+        if self.is_terminated() and not self.vehicle.crashed:
+            reward += 1
+        
+        return utils.lmap(reward, [0, 1], [self.config["collision_penalty"] + self.config["merging_speed_penalty"], 1])
+    
+    def _rewards(self, action):
+        ttc_reward, ttc = self._compute_ttc()
+        if ttc < 3:
+            ttc_reward = 1 - 3 / ttc
+        else:
+            ttc_reward = 0
+
+        return {
+            "ttc_reward": self.config["ttc_reward_weight"] * ttc_reward,
+            "collision_penalty": self.vehicle.crashed,
+            "lane_change_penalty": int(action in [0, 1]),  # Penalty for changing lanes
+            "high_speed_reward": self._compute_high_speed_reward(),
+            "right_lane_reward": int(self.vehicle.lane_index[2] == 0),  # Reward for being in the rightmost lane
+        }
+    
+    @staticmethod
+    def _compute_vehicle_ttc(ego_vehicle, other_vehicle):
+        ego_radius = ego_vehicle.LENGTH / 2
+        other_radius = other_vehicle.LENGTH / 2 
+        ego_position = ego_vehicle.position
+        other_position = other_vehicle.position
+        relative_position = ego_position - other_position
+        relative_speed = ego_vehicle.speed - other_vehicle.speed
+
+        time_to_collision = (
+            np.dot(relative_position, relative_speed)
+            / np.dot(relative_speed, relative_speed)
+        )
+        if time_to_collision < 0:
+            time_to_collision = float("inf")
+        else:
+            distance = np.linalg.norm(relative_position - time_to_collision * relative_speed)
+            if distance < ego_radius + other_radius:
+                return time_to_collision
+            else:
+                return float("inf")
+
+    def _compute_high_speed_reward(self) -> float:
+        speed_range = self.config["reward_speed_range"]
+        scaled_speed = utils.lmap(self.vehicle.speed, speed_range, [0, 1])
+        return scaled_speed
+
 

@@ -74,6 +74,12 @@ def register_highway_envs():
         id='merge-in-v2',
         entry_point='highway_env.envs:MergeinEnvSarhoz',
     )
+
+    #Salih merge in Reward
+    register(
+        id='merge-in-v3',
+        entry_point='highway_env.envs:MergeinEnvSalih',
+    )
     # ------------ All merge -------------------------
 
     # parking_env.py

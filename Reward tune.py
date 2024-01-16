@@ -15,7 +15,7 @@ frameSize = (1280,560)
 out = cv2.VideoWriter('video'+"-Merging"+'.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
 
 def model_creation(model_name: str):
-    env = gym.make("merge-in-v0")
+    env = gym.make("merge-in-v3")
     if (model_name == "DQN"):
         print("DQN")
         model = DQN('MlpPolicy', env,
@@ -70,8 +70,8 @@ def DRL_Models():
     # model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
     #model = PPO.load("highway_ppo/model") #--> 12 colisions
     model = TRPO.load("highway_trpo/model") #--> 10 colisions
+    env = gym.make('merge-in-v3', render_mode='rgb_array')
 
-    env = gym.make('merge-in-v0', render_mode='rgb_array')
     #env = gym.make('intersection-v1', render_mode='rgb_array')
     env.configure({
     "screen_width": 1280,
@@ -82,8 +82,8 @@ def DRL_Models():
     #pprint.pprint(env.config)
 
     #Performance and logger
-    ##perfm = Performance()
-    ##lolly = Logger()
+    perfm = Performance()
+    lolly = Logger()
 
     
     # create a image
@@ -107,7 +107,7 @@ def DRL_Models():
             stepcounter += 1
             total_reward += reward
 
-           ## lolly.file(ego_car)
+            lolly.file(ego_car)
 
             if info.get('crashed'):
                 number_of_collisions += 1
@@ -119,8 +119,8 @@ def DRL_Models():
             best_reward = total_reward
         rewards.append(total_reward)
         T+=1
-        ##perfm.add_measurement(lolly)
-        ##lolly.clear_log()
+        perfm.add_measurement(lolly)
+        lolly.clear_log()
         print(T)
 
 
@@ -130,7 +130,7 @@ def DRL_Models():
     plt.ylabel("Total Reward")
     plt.show()
 
-    ##perfm.print_performance()
+    perfm.print_performance()
     
     print(f'Best Reward: {best_reward}') # print best reward
     
