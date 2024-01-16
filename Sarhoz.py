@@ -16,7 +16,7 @@ frameSize = (1280,560)
 out = cv2.VideoWriter('video'+"-Merging"+'.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
 
 # Create enviromenent
-env = gym.make("merge-in-v2", render_mode = "rgb_array")
+env = gym.make("merge-in-v0", render_mode = "rgb_array")
 #env = gym.make("highway-v0")
     
 
@@ -79,7 +79,7 @@ def model_creation(model_name: str):
              device='cuda',
              _init_setup_model=True)
         model.learn(20000)
-        model.save("highway_trpo/model-cont-Sarhoz")
+        model.save("highway_trpo/model")
     else:
         print("Input model does not exist!")
 
@@ -89,12 +89,12 @@ def DRL_Models():
     # Train model 
     #model_creation("DQN")
     #model_creation("PPO")
-    model_creation("TRPO")
+    #model_creation("TRPO")
 
     # Load model
-    #model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
-    #model = PPO.load("highway_ppo/model") #--> 12 colisions
-    model = TRPO.load("highway_trpo/model-Sarhoz") #--> 10 colisions
+    #model = DQN.load("highway_dqn/model")
+    #model = PPO.load("highway_ppo/model") 
+    model = TRPO.load("highway_trpo/model-cont")
 
     env.configure({
     "screen_width": 1280,
