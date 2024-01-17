@@ -52,3 +52,17 @@
  The collision rate of 800 measurements is: 0.06375 
 
 [20.025570652845925, 0.021210727824160714, 0.03080040366833087, 22.423347988310184, 0.13138340715065422, 16.7825, 1.0, 0.06375]
+
+ The TRPO with base rewards (v0) (no Tuning and DiscreteAction) -- 100 runs -- merge 
+ 
+ The average speed of 100 measurements is: 20.032339781813615 
+ The average peak jerk of 100 measurements is: 0.04206736045531054 
+ The average total jerk of 100 measurements is: 0.05152769888088356 
+ The average total distance of 100 measurements is: 22.292578428819137 
+ The average total steering of 100 measurements is: 0.11550120971576422 
+ The average duration time is of 100 measurements is: 16.68 
+ The on_lane rate of 100 measurements is: 1.0 
+ The collision rate of 100 measurements is: 0.1 
+
+[20.032339781813615, 0.04206736045531054, 0.05152769888088356, 22.292578428819137, 0.11550120971576422, 16.68, 1.0, 0.1]
+
