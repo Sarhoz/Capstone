@@ -53,7 +53,7 @@ def model_creation(model_name: str):
              gamma=0.8,
              tensorboard_log="highway_TRPO/",
              device='cuda')
-        model.learn(20000)
+        model.learn(5000)
         model.save("highway_trpo/model")
     else:
         print("Input model does not exist!")
@@ -64,7 +64,7 @@ def DRL_Models():
     # Train model 
     #model_creation("DQN")
     #model_creation("PPO")
-    #model_creation("TRPO")
+    model_creation("TRPO")
 
     # Load model
     # model = DQN.load("highway_dqn/model") #--> 12 colisions but looks really weird when merging
