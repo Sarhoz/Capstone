@@ -8,6 +8,9 @@ from highway_env_copy.road.road import Road, LaneIndex
 from highway_env_copy.vehicle.objects import RoadObject, Obstacle, Landmark
 from highway_env_copy.utils import Vector
 
+#added
+# from highway_env_copy.envs.common.observation import KinematicObservation
+
 
 class Vehicle(RoadObject):
 
@@ -188,8 +191,7 @@ class Vehicle(RoadObject):
                 self.COMFORT_ACC_MAX - self.COMFORT_ACC_MIN)
         jerk_steer = abs(self.recorded_actions[-2]['steering'] - self.recorded_actions[-1]['steering']) * 2 / np.pi
         return (jerk_accel + jerk_steer) / 2
-        #--- Group ---
-
+    
     def clip_actions(self) -> None:
         if self.crashed:
             self.action['steering'] = 0
@@ -269,6 +271,38 @@ class Vehicle(RoadObject):
             return np.array([long, lat, ang])
         else:
             return np.zeros((3,))
+    
+    # Added TTC
+    # @property
+    # def _compute_ttc(self):
+    #     TTC = None
+    #     from highway_env.envs.common.observation import TimeToCollisionObservation, KinematicObservation
+    #     obs_matrix = KinematicObservation(self, absolute=False, vehicles_count=10,
+    #                                      normalize=False).observe()
+    #     use_TTC = False
+    #     glob_TTC = float('inf')
+    #     for vehicle in range(1, len(obs_matrix)):
+    #         x_pos = obs_matrix[vehicle][1]
+    #         y_pos = -1 * obs_matrix[vehicle][2]
+    #         pos_vec = [x_pos, y_pos]  # this is relative when absolute = False
+    #         vx = obs_matrix[vehicle][3]
+    #         vy = -1 * obs_matrix[vehicle][4]
+    #         vel_vec = [vx, vy]
+    #         if np.dot(pos_vec, pos_vec) != 0:
+    #             proj_pos_vel = np.multiply(np.dot(vel_vec, pos_vec) / np.dot(pos_vec, pos_vec), pos_vec)
+    #             len_pos = np.linalg.norm(pos_vec)
+    #             len_proj = np.linalg.norm(proj_pos_vel)
+
+    #             if proj_pos_vel[0] * vel_vec[0] > 0 and proj_pos_vel[1] * vel_vec[1] > 0:  # collinear so TTC infinite
+    #                 TTC = float('Inf')
+    #             else:
+    #                 TTC = len_pos / len_proj
+    #         else:
+    #             TTC = float('Inf')
+    #         return TTC
+        
+    # End of added TTC
+          
 
     def to_dict(self, origin_vehicle: "Vehicle" = None, observe_intentions: bool = True) -> dict:
         d = {
@@ -311,7 +345,7 @@ class Logger:
         self.collision = []  # boolean
         self.lane_time = []  # float
         self.travel_distance = []  # float
-        self.ttc = [] #
+        # self.ttc = [] #float
 
         self.duration = 0  # len(self.speed)
 
@@ -327,6 +361,7 @@ class Logger:
         self.travel_distance.append(
             v.position_change)  # TODO modify to proper distance based on lane progression, in stead of car travel distance
         self.duration += 1
+        # self.ttc.append(v._compute_ttc)
 
     @property
     def average_speed(self):
@@ -335,6 +370,14 @@ class Logger:
     @property
     def peak_jerk(self):
         return np.max(self.jerk)
+    
+    # @property
+    # def minimum_ttc(self):
+    #     return np.min(self.ttc)
+
+    # @property
+    # def average_ttc(self):
+    #     return np.average(self.ttc)
 
     def get_cumulative_jerk(self):
         return np.sum(self.jerk)
@@ -365,6 +408,8 @@ class Performance:
         self.travel_distance = []
         self.run_time = []
         self.measurements = 0
+        # self.avg_ttc = []
+        # self.min_ttc = []
 
     def clear_measurements(self):
         self.__init__()
@@ -379,6 +424,8 @@ class Performance:
         self.run_time.append(log.duration)
         self.travel_distance.append(log.get_cumulative_distance())
         self.measurements += 1
+        # self.avg_ttc.append(log.average_ttc)
+        # self.min_ttc.append(log.minimum_ttc)
 
     def get_indicators(self):
         statistics = {
@@ -390,7 +437,9 @@ class Performance:
             'lane_times': self.lane_time,
             'mileage': self.travel_distance,
             'run_times': self.run_time,
-            'collisions': self.collision
+            'collisions': self.collision,
+            # 'min_ttc': self.avg_ttc,
+            # 'average ttc' : self.avg_ttc,
         }
         return statistics
 
@@ -404,6 +453,9 @@ class Performance:
         print('The average duration time is of', n, 'measurements is:', np.average(self.run_time))
         print('The on_lane rate of', n, 'measurements is:', np.average(self.lane_time)/np.average(self.run_time))
         print('The collision rate of', n, 'measurements is:', np.average(self.collision))
+        # print('The average minimal ttc of ', n, 'measurements is:', np.average(self.min_ttc))
+        # print('The average of the average ttc of ', n, 'measurements is:', np.average(self.min_ttc)) 
+        # Voegt niet zoveel toe
 
     def string_rep(self):
         n = self.measurements
@@ -415,6 +467,7 @@ class Performance:
                f" The average duration time is of {n} measurements is: {np.average(self.run_time)} \n" \
                f" The on_lane rate of {n} measurements is: {np.average(self.lane_time) / np.average(self.run_time)} \n" \
                f" The collision rate of {n} measurements is: {np.average(self.collision)} \n" \
+            #    f" The average minimal ttc of ', {n}, 'measurements is:', {np.average(self.min_ttc)} \n" \
 
     def array_rep(self):
         n = self.measurements
