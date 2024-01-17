@@ -311,6 +311,7 @@ class Logger:
         self.collision = []  # boolean
         self.lane_time = []  # float
         self.travel_distance = []  # float
+        self.ttc = [] #
 
         self.duration = 0  # len(self.speed)
 
