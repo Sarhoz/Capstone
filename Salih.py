@@ -17,7 +17,7 @@ frameSize = (1280,560)
 out = cv2.VideoWriter('video'+"-Merging"+'.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
 
 # Create enviromenent
-env = gym.make("merge-in-v0", render_mode = "rgb_array")
+env = gym.make("merge-in-v3", render_mode = "rgb_array")
 #env = gym.make("racetrack-v0", render_mode = "rgb_array")
 
 # env.configure({
@@ -84,7 +84,7 @@ def model_creation(model_name: str):
              seed=None,
              device='cuda',
              _init_setup_model=True)
-        model.learn(50000)
+        model.learn(6000)
         model.save("highway_trpo/model-cont-S1")
     else:
         print("Input model does not exist!")
@@ -169,7 +169,7 @@ def DRL_Models():
     
     #a stands for "append"
     with open("Performance.txt", "a") as file:
-        file.write(f"\n The TRPO with base rewards (v0) (no Tuning and DiscreteAction) -- 100 runs -- merge \n \n")
+        file.write(f"\n The TRPO with Salih rewards (v3) (no Tuning and DiscreteAction) (TTC threshold 1 sec) -- 100 runs -- merge \n \n")
         file.write(f"{perfm.string_rep()}")
         file.write(f"\n")
         file.write(f"{perfm.array_rep()}")
