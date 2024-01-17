@@ -7,6 +7,7 @@ from stable_baselines3 import DQN
 import cv2
 from stable_baselines3 import PPO
 from sb3_contrib import TRPO
+import numpy as np
 
 from highway_env_copy.vehicle.kinematics import Performance, Logger
 
@@ -16,9 +17,14 @@ frameSize = (1280,560)
 out = cv2.VideoWriter('video'+"-Merging"+'.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
 
 # Create enviromenent
-env = gym.make("merge-in-v0", render_mode = "rgb_array")
-#env = gym.make("highway-v0")
-    
+env = gym.make("merge-in-v3", render_mode = "rgb_array")
+#env = gym.make("racetrack-v0", render_mode = "rgb_array")
+
+# env.configure({
+#      "action": {
+#             "type": "ContinuousAction"
+#             },
+#     })
 
 def model_creation(model_name: str):
     
@@ -52,14 +58,14 @@ def model_creation(model_name: str):
                 gamma=0.8,
                 #tensorboard_log="highway_PPO/",
                 device='cuda')
-        model.learn(20000)
-        model.save("highway_ppo/model")
+        model.learn(150000)
+        model.save("highway_ppo/model-S1")
     elif (model_name == "TRPO"):
         print("TRPO")
         model = TRPO("MlpPolicy", env,
              learning_rate=0.0003,
              n_steps=1024,
-             batch_size=64,
+             batch_size=128,
              gamma=0.99,
              cg_max_steps=15,
              cg_damping=0.1,
@@ -78,8 +84,8 @@ def model_creation(model_name: str):
              seed=None,
              device='cuda',
              _init_setup_model=True)
-        model.learn(20000)
-        model.save("highway_trpo/model")
+        model.learn(150000)
+        model.save("highway_trpo/model-cont-S1")
     else:
         print("Input model does not exist!")
 
@@ -87,22 +93,21 @@ def model_creation(model_name: str):
 def DRL_Models():
     
     # Train model 
+
     #model_creation("DQN")
     #model_creation("PPO")
     #model_creation("TRPO")
 
     # Load model
-    #model = DQN.load("highway_dqn/model")
-    #model = PPO.load("highway_ppo/model") 
-    model = TRPO.load("highway_trpo/model-cont")
+    model = DQN.load("highway_dqn/model")
+    #model = PPO.load("highway_ppo/model-S1") 
+    #model = TRPO.load("highway_trpo/model-cont-S1")
 
     env.configure({
     "screen_width": 1280,
     "screen_height": 560,
     "renderfps": 16
     })
-
-    env.reset()
 
     pprint.pprint(env.config)
 
