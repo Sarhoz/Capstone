@@ -66,3 +66,31 @@
 
 [20.032339781813615, 0.04206736045531054, 0.05152769888088356, 22.292578428819137, 0.11550120971576422, 16.68, 1.0, 0.1]
 
+
+ The TRPO with Salih rewards (v3) (no Tuning and DiscreteAction) (TTC threshold 1 sec) -- 100 runs -- merge 
+ 
+ The average speed of 100 measurements is: 29.29129518571548 
+ The average peak jerk of 100 measurements is: 0.04474306119643888 
+ The average total jerk of 100 measurements is: 0.05705055626079887 
+ The average total distance of 100 measurements is: 21.237358542476958 
+ The average total steering of 100 measurements is: 0.08669181407371816 
+ The average duration time is of 100 measurements is: 10.85 
+ The on_lane rate of 100 measurements is: 1.0 
+ The collision rate of 100 measurements is: 0.47 
+
+[29.29129518571548, 0.04474306119643888, 0.05705055626079887, 21.237358542476958, 0.08669181407371816, 10.85, 1.0, 0.47]
+
+
+ The TRPO with Salih rewards (v3) (no Tuning and DiscreteAction) (TTC threshold 1 sec) -- 100 runs -- merge 
+ 
+ The average speed of 100 measurements is: 26.35873140674381 
+ The average peak jerk of 100 measurements is: 0.036262047021697434 
+ The average total jerk of 100 measurements is: 0.06303844395972645 
+ The average total distance of 100 measurements is: 23.073408209238988 
+ The average total steering of 100 measurements is: 0.15401194236371002 
+ The average duration time is of 100 measurements is: 13.14 
+ The on_lane rate of 100 measurements is: 1.0 
+ The collision rate of 100 measurements is: 0.13 
+
+[26.35873140674381, 0.036262047021697434, 0.06303844395972645, 23.073408209238988, 0.15401194236371002, 13.14, 1.0, 0.13]
+
