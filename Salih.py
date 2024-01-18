@@ -96,12 +96,12 @@ def DRL_Models():
 
     #model_creation("DQN")
     #model_creation("PPO")
-    model_creation("TRPO")
+    #model_creation("TRPO")
 
     # Load model
     #model = DQN.load("highway_dqn/model")
     #model = PPO.load("highway_ppo/model-S1") 
-    model = TRPO.load("highway_trpo/model-cont-S1")
+    model = TRPO.load("model-v3-50000-1sec-Salih")
 
     env.configure({
     "screen_width": 1280,
