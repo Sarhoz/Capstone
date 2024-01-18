@@ -102,3 +102,13 @@
 
 [29.421969398799597, 21.522710256820822, 11.0, 0.5]
 
+
+ The TRPO model with baseline rewards (DiscreteMeteAction) 
+ 
+ The average speed of 50 measurements is: 20.045707137616624 
+ The average total distance of 50 measurements is: 22.598931272459954 
+ The average duration time is of 50 measurements is: 16.9 
+ The collision rate of 50 measurements is: 0.02 
+
+[20.045707137616624, 22.598931272459954, 16.9, 0.02]
+
