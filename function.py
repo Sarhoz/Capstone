@@ -10,13 +10,22 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Created environment
-def environment(environment_name: str):
+def environment(environment_name: str, Action_type: bool):
     env = gym.make(environment_name, render_mode = "rgb_array")
     
     env.configure({
     "screen_width": 1280,
     "screen_height": 560,
     "renderfps": 16})
+
+    # The action type is true ==> ContinuousActionSpace
+    if Action_type:
+        env.configure({"action": {
+                "type": "ContinuousAction",
+                "longitudinal": True,
+                "lateral": True,
+                "target_speeds": [20, 30]
+                }})
 
     pprint.pprint(env.config)
     
@@ -33,7 +42,7 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
                      tensorboard_log="Tensorboard_log/baseline_TRPO",
                      device="cuda",
                      verbose=1)
-        model.learn(iterations)
+        model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
         if rewards:
             model.save("highway_trpo/model-baseline-rewards")
@@ -45,7 +54,7 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
                      tensorboard_log="Tensorboard_log/baseline_PPO",
                      device="cuda",
                      verbose=1)
-        model.learn(iterations)
+        model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
         if rewards:
             model.save("highway_ppo/model-baseline-rewards")
@@ -57,7 +66,7 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
                      tensorboard_log="Tensorboard_log/baseline_DQN",
                      device="cuda",
                      verbose=1)
-        model.learn(iterations)
+        model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
         if rewards:
             model.save("highway_dqn/model-baseline-rewards")
