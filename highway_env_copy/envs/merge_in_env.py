@@ -22,10 +22,9 @@ class MergeinEnv(AbstractEnv):
     vehicles.
     """
 
-    print('default')
-
     @classmethod
     def default_config(cls) -> dict:
+        print('default')
         cfg = super().default_config()
         cfg.update({
             "collision_reward": -1,
@@ -153,10 +152,9 @@ class MergeinEnv(AbstractEnv):
 class MergeinEnvArno(MergeinEnv):
     "new merge-in environment made by Arno"
 
-    print('Arno')
-
     @classmethod
     def default_config(cls) -> dict:
+        print('Arno')
         cfg = super().default_config()
         cfg.update({
             "collision_reward": -1,
@@ -168,6 +166,24 @@ class MergeinEnvArno(MergeinEnv):
 
         })
         return cfg
+
+    def _reward(self, action: int) -> float:
+        """
+        The vehicle is rewarded for driving with high speed on lanes to the right and avoiding collisions
+
+        But an additional altruistic penalty is also suffered if any vehicle on the merging lane has a low speed.
+
+        :param action: the action performed
+        :return: the reward of the state-action transition
+        """
+        check = [self.config.get(name, 0) * reward for name, reward in self._rewards(action).items()]
+        reward = sum(self.config.get(name, 0) * reward for name, reward in self._rewards(action).items())
+        print(check, reward)
+        return utils.lmap(reward,
+                          [self.config["collision_reward"] + self.config["merging_speed_reward"],
+                           self.config["high_speed_reward"] + self.config["right_lane_reward"]],
+                          [0, 1])
+
 
     def _rewards(self, action: int) -> Dict[Text, float]:
         scaled_speed = utils.lmap(self.vehicle.speed, self.config["reward_speed_range"], [0, 1])
