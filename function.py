@@ -5,6 +5,9 @@ from sb3_contrib import TRPO
 from highway_env_copy.vehicle.kinematics import Performance, Logger
 from matplotlib import pyplot as plt
 import cv2
+import pprint
+import warnings
+warnings.filterwarnings("ignore")
 
 # Created environment
 def environment(environment_name: str):
@@ -15,6 +18,8 @@ def environment(environment_name: str):
     "screen_height": 560,
     "renderfps": 16})
 
+    pprint.pprint(env.config)
+    
     env.reset()
     
     return env
@@ -63,11 +68,11 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
         print("The input algorithm does not exist!")
 
 # Check the Performance of a model
-def performance_model(env, model, model_path: str, number_of_tests: int, video_name:str, i: int):
-    
+def performance_model(env, model, model_name: str, model_path: str, number_of_tests: int, video_name:str, i: int, base_reward: bool):
+
     # Video
     frameSize = (1280,560)
-    out = cv2.VideoWriter('video'+"-Merging"+ video_name + '.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
+    out = cv2.VideoWriter('video'+"-Merging-"+ video_name + '.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
 
     # load model
     model = model.load(model_path)
@@ -122,12 +127,18 @@ def performance_model(env, model, model_path: str, number_of_tests: int, video_n
     perfm.print_performance()
     
     print(f'Best Reward: {best_reward}') # print best reward
-    print('crashrate is '+str(float(number_of_collisions)/T)+' and T is'+ str(T))
-    print('number_of_collisions is:', number_of_collisions)
+    print('crashrate is '+ str(float(number_of_collisions)/T) +' and T is '+ str(T))
+    print('number_of_collisions is: ', number_of_collisions)
     
     writing = "w" if i == 0 else "a"
+
+    if (base_reward):
+        temp = "baseline rewards"
+    else:
+        temp = "modified rewards"
+
     with open("Performance.txt", writing) as file:
-        file.write(f"\n The TRPO with base rewards (no Tuning and ContiniousAction) -- 100 runs -- merge \n \n")
+        file.write(f"\n The {model_name} model with {temp} (DiscreteMeteAction) \n \n")
         file.write(f"{perfm.string_rep()}")
         file.write(f"\n")
         file.write(f"{perfm.array_rep()}")

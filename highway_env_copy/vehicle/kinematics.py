@@ -183,6 +183,7 @@ class Vehicle(RoadObject):
             return 0
         return np.linalg.norm(np.array(self.recorded_positions[-1]) - np.array(self.recorded_positions[-2]))
 
+    # jerk only used for continuous!
     @property
     def jerk(self) -> float:
         if len(self.recorded_actions) < 2:
@@ -340,13 +341,10 @@ class Vehicle(RoadObject):
 class Logger:
     def __init__(self):
         self.speed = []  # float
-        self.jerk = []  # float
-        self.steering = []  # float
         self.collision = []  # boolean
-        self.lane_time = []  # float
         self.travel_distance = []  # float
         # self.ttc = [] #float
-
+        # self.right_lane = [] #float
         self.duration = 0  # len(self.speed)
 
     def clear_log(self):
@@ -354,22 +352,16 @@ class Logger:
 
     def file(self, v: Vehicle):
         self.speed.append(v.speed)
-        self.jerk.append(v.jerk)
-        self.steering.append(v.action['steering'])
         self.collision.append(v.crashed)
-        self.lane_time.append(v.on_road)
         self.travel_distance.append(
             v.position_change)  # TODO modify to proper distance based on lane progression, in stead of car travel distance
         self.duration += 1
         # self.ttc.append(v._compute_ttc)
+        # self.right_lane.append(v.)
 
     @property
     def average_speed(self):
         return np.average(self.speed)
-
-    @property
-    def peak_jerk(self):
-        return np.max(self.jerk)
     
     # @property
     # def minimum_ttc(self):
@@ -379,11 +371,6 @@ class Logger:
     # def average_ttc(self):
     #     return np.average(self.ttc)
 
-    def get_cumulative_jerk(self):
-        return np.sum(self.jerk)
-
-    def get_cumulative_steering(self):
-        return np.sum(np.abs(self.steering))
 
     def get_cumulative_lane_time(self):
         return np.sum(self.lane_time)
@@ -400,11 +387,7 @@ class Performance:
 
     def __init__(self):
         self.average_speed = []
-        self.jerk_peak = []
-        self.jerk_cumulative = []
-        self.steering = []
         self.collision = []
-        self.lane_time = []
         self.travel_distance = []
         self.run_time = []
         self.measurements = 0
@@ -416,11 +399,7 @@ class Performance:
 
     def add_measurement(self, log: Logger):
         self.average_speed.append(log.average_speed)
-        self.jerk_peak.append(log.peak_jerk)
-        self.jerk_cumulative.append(log.get_cumulative_jerk())
-        self.steering.append(log.get_cumulative_steering())
         self.collision.append(log.crashed)
-        self.lane_time.append(log.get_cumulative_lane_time())
         self.run_time.append(log.duration)
         self.travel_distance.append(log.get_cumulative_distance())
         self.measurements += 1
@@ -431,10 +410,6 @@ class Performance:
         statistics = {
             'measurements': self.measurements,
             'avg_speeds': self.average_speed,
-            'jerk_totals': self.jerk_cumulative,
-            'jerk_peaks': self.jerk_peak,
-            'steering_totals': self.steering,
-            'lane_times': self.lane_time,
             'mileage': self.travel_distance,
             'run_times': self.run_time,
             'collisions': self.collision,
@@ -446,12 +421,8 @@ class Performance:
     def print_performance(self):
         n = self.measurements
         print('The average speed of', n, 'measurements is:', np.average(self.average_speed))
-        print('The average peak jerk of', n, 'measurements is:', np.average(self.jerk_peak))
-        print('The average total jerk of', n, 'measurements is:', np.average(self.jerk_cumulative))
         print('The average total distance of', n, 'measurements is:', np.average(self.travel_distance))
-        print('The average total steering of', n, 'measurements is:', np.average(self.steering))
         print('The average duration time is of', n, 'measurements is:', np.average(self.run_time))
-        print('The on_lane rate of', n, 'measurements is:', np.average(self.lane_time)/np.average(self.run_time))
         print('The collision rate of', n, 'measurements is:', np.average(self.collision))
         # print('The average minimal ttc of ', n, 'measurements is:', np.average(self.min_ttc))
         # print('The average of the average ttc of ', n, 'measurements is:', np.average(self.min_ttc)) 
@@ -460,18 +431,13 @@ class Performance:
     def string_rep(self):
         n = self.measurements
         return f" The average speed of {n} measurements is: {np.average(self.average_speed)} \n" \
-               f" The average peak jerk of {n} measurements is: {np.average(self.jerk_peak)} \n" \
-               f" The average total jerk of {n} measurements is: {np.average(self.jerk_cumulative)} \n" \
                f" The average total distance of {n} measurements is: {np.average(self.travel_distance)} \n" \
-               f" The average total steering of {n} measurements is: {np.average(self.steering)} \n" \
                f" The average duration time is of {n} measurements is: {np.average(self.run_time)} \n" \
-               f" The on_lane rate of {n} measurements is: {np.average(self.lane_time) / np.average(self.run_time)} \n" \
                f" The collision rate of {n} measurements is: {np.average(self.collision)} \n" \
             #    f" The average minimal ttc of ', {n}, 'measurements is:', {np.average(self.min_ttc)} \n" \
 
     def array_rep(self):
         n = self.measurements
-        return [np.average(self.average_speed), np.average(self.jerk_peak), np.average(self.jerk_cumulative),
-                np.average(self.travel_distance),
-                np.average(self.steering), np.average(self.run_time),
-                np.average(self.lane_time) / np.average(self.run_time), np.average(self.collision)]
+        return [np.average(self.average_speed),
+                np.average(self.travel_distance), 
+                np.average(self.run_time), np.average(self.collision)]
