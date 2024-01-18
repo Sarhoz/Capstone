@@ -313,36 +313,32 @@ class MergeinEnvSalih(MergeinEnv):
                 return float("inf")
 
     def _compute_ttc(self):
-        TTC = None
+        ttc_reward = 0  # Initialize outside the loop
         obs_matrix = KinematicObservation(self, absolute=False, vehicles_count=self.config["other_vehicles"],
-                                         normalize=False).observe()
-        use_TTC = False
-        glob_TTC = float('inf')
+                                        normalize=False).observe()
         for vehicle in range(1, len(obs_matrix)):
+            TTC = float('inf')  # Initialize TTC to infinity
+            use_TTC = False
+            glob_TTC = float('inf')
             x_pos = obs_matrix[vehicle][1]
             y_pos = -1 * obs_matrix[vehicle][2]
             pos_vec = [x_pos, y_pos]  # this is relative when absolute = False
             vx = obs_matrix[vehicle][3]
             vy = -1 * obs_matrix[vehicle][4]
             vel_vec = [vx, vy]
+            
             if np.dot(pos_vec, pos_vec) != 0:
                 proj_pos_vel = np.multiply(np.dot(vel_vec, pos_vec) / np.dot(pos_vec, pos_vec), pos_vec)
                 len_pos = np.linalg.norm(pos_vec)
                 len_proj = np.linalg.norm(proj_pos_vel)
 
-                if proj_pos_vel[0] * vel_vec[0] > 0 and proj_pos_vel[1] * vel_vec[1] > 0:  # collinear so TTC infinite
-                    TTC = float('Inf')
-                else:
+                if np.dot(pos_vec, pos_vec) != 0 and len_proj != 0:
                     TTC = len_pos / len_proj
-            else:
-                TTC = float('Inf')
-            if TTC > 0:  # just to be safe
-                glob_TTC = min(glob_TTC, TTC)
+                else:
+                    TTC = float('inf')
 
-        if glob_TTC < 3:  # only care about TTC if crash is close
-            ttc_reward = 1 - 3 / glob_TTC
-        else:
-            ttc_reward = 0
+                if TTC < 3:  # only care about TTC if crash is close
+                    ttc_reward += 1 - 3 / TTC
 
         return ttc_reward
     

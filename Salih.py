@@ -136,7 +136,7 @@ def DRL_Models():
             obs, reward, done, truncated, info = env.step(action)
             stepcounter += 1
             total_reward += reward
-
+            # print(info)
             lolly.file(ego_car)
 
             if info.get('crashed'):
