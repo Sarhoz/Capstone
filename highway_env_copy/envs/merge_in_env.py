@@ -11,6 +11,8 @@ from highway_env_copy.vehicle.objects import Obstacle
 # added
 from highway_env.envs.common.observation import TimeToCollisionObservation, KinematicObservation
 
+from scipy.stats import norm
+
 
 class MergeinEnv(AbstractEnv):
 
@@ -309,7 +311,6 @@ class MergeinEnvSalih(MergeinEnv):
         super().__init__(config)
         self.render_mode = render_mode
 
-
     @classmethod
     def default_config(cls) -> dict:
         cfg = super().default_config()
@@ -341,27 +342,27 @@ class MergeinEnvSalih(MergeinEnv):
             + high_speed_reward
             + right_lane_reward
         )
-        reward = sum(self.config.get(name, 0) * reward for name, reward in self._rewards(action).items())
+        reward = sum(self.config.get(name, 0) * reward for name, reward in self._rewards(action).items()) 
         if self._is_terminated() and not self.vehicle.crashed:
             reward += 1
-        #print(self.config["lane_change_penalty"])
+
         #return utils.lmap(reward, [0, 1], [self.config["collision_penalty"] + self.config["merging_speed_penalty"] + self.config["lane_change_penaly"], 1])
         return utils.lmap(reward,
                           [self.config["collision_penalty"] + self.config["lane_change_penalty"],
                            self.config["high_speed_reward"] + self.config["right_lane_reward"] + self.config["ttc_reward_weight"]],
                           [0, 1])
     
+
+
     def _rewards(self, action):
         ttc_reward = self._compute_ttc()
         merging_speed_penalty = self.config["merging_speed_penalty"] * self._compute_merging_speed_penalty()
 
-        on_highway = self.vehicle.lane_index[1] in ["a", "b", "c"]
-        was_on_merging_lane = self.vehicle.previous_lane_index[1] == "k" if hasattr(self.vehicle, 'previous_lane_index') else False
-
+        
         return {
             "ttc_reward": self.config["ttc_reward_weight"] * ttc_reward,
             "collision_penalty": self.config["collision_penalty"] if self.vehicle.crashed else 0,
-            "lane_change_penalty": self.config["lane_change_penalty"] if action in [0, 2] else 0,  # Penalty for changing lanes
+            "lane_change_penalty": self.config["lane_change_penalty"] if action in [0, 2] else 0 ,  # Penalty for changing lanes
             "high_speed_reward": self._compute_high_speed_reward(),
             "right_lane_reward": self.config["right_lane_reward"] if self.vehicle.lane_index[2] == 0 else 0, # Reward for being in the rightmost lane
             #"merging_speed_penalty": merging_speed_penalty,  
@@ -422,10 +423,23 @@ class MergeinEnvSalih(MergeinEnv):
     #         pass
     #     return info
 
+
+ ##### TEST 
+    # def _compute_high_speed_reward(self) -> float:
+    #     speed_range = self.config["reward_speed_range"]
+    #     scaled_speed = utils.lmap(self.vehicle.speed, speed_range, [0, 1])
+    #     return scaled_speed
+
     def _compute_high_speed_reward(self) -> float:
         speed_range = self.config["reward_speed_range"]
+        mean_speed = sum(speed_range) / 2
+        std_dev = (speed_range[1] - speed_range[0]) / 3  # Adjust the factor for desired spread
+
         scaled_speed = utils.lmap(self.vehicle.speed, speed_range, [0, 1])
-        return scaled_speed
+        gaussian_reward = norm.pdf(scaled_speed, mean_speed, std_dev)
+
+        return gaussian_reward
+
 
     def _compute_merging_speed_penalty(self):
         merging_speed_penalty = sum(
@@ -436,3 +450,45 @@ class MergeinEnvSalih(MergeinEnv):
         return merging_speed_penalty
 
 
+    def _reset(self) -> None:
+        self._make_road()
+        self._make_vehicles()
+        
+    
+    def _make_vehicles(self) -> None:
+        """
+        Populate a road with several vehicles on the highway and on the merging lane, as well as an ego-vehicle.
+
+        :return: the ego-vehicle
+        """
+        road = self.road
+        ego_vehicle = self.action_type.vehicle_class(road,
+                                                     road.network.get_lane(("j", "k", 0)).position(30, 0),
+                                                     speed=25)
+        road.vehicles.append(ego_vehicle)
+
+        other_vehicles_type = utils.class_from_path(self.config["other_vehicles_type"])
+
+
+        # Generate a list of 20 tuples with random position and speed values
+        number_of_cars = 10
+        random_cars = [(self.np_random.uniform(0, 1), self.np_random.uniform(27, 30)) for _ in range(number_of_cars)]
+
+
+        for i , (position, speed) in enumerate(random_cars):
+            lane = road.network.get_lane(("a", "b", self.np_random.integers(2)))
+            position = lane.position(position + (380/number_of_cars)* i , 0)#+ self.np_random.uniform(-5, 5)
+            speed = speed #+= self.np_random.uniform(-1, 1)
+            road.vehicles.append(other_vehicles_type(road, position, speed=speed))
+        
+        # Add a vehicle before and after the ego vehicle on the merging lane
+
+        # merge_lane = road.network.get_lane(("b", "c", 0))
+        # road.vehicles.append(other_vehicles_type(road, merge_lane.position(10, 0), 25))
+        # road.vehicles.append(other_vehicles_type(road, merge_lane.position(100, 0), 25))
+
+        # merging_v = other_vehicles_type(road, road.network.get_lane(("j", "k", 0)).position(110, 0), speed=20)
+        ego_vehicle.target_speed = 30
+        # road.vehicles.append(merging_v)
+        self.vehicle = ego_vehicle
+        
