@@ -256,16 +256,17 @@ class MergeinEnvSalih(MergeinEnv):
         super().__init__(config)
         self.render_mode = render_mode
 
+
     @classmethod
     def default_config(cls) -> dict:
         cfg = super().default_config()
         cfg.update({
                 "collision_penalty": -1,
-                "right_lane_reward": 0.1,
+                "right_lane_reward": 0.2,
                 "high_speed_reward": 0.3,
                 "reward_speed_range": [20, 30],
                 "merging_speed_penalty": -0.5,
-                "lane_change_penalty": -0.01,
+                "lane_change_penalty": -0.05,
                 "ttc_reward_weight": 1,
                 "other_vehicles": 9
         })
@@ -300,6 +301,10 @@ class MergeinEnvSalih(MergeinEnv):
     def _rewards(self, action):
         ttc_reward = self._compute_ttc()
         merging_speed_penalty = self.config["merging_speed_penalty"] * self._compute_merging_speed_penalty()
+
+        on_highway = self.vehicle.lane_index[1] in ["a", "b", "c"]
+        was_on_merging_lane = self.vehicle.previous_lane_index[1] == "k" if hasattr(self.vehicle, 'previous_lane_index') else False
+
         return {
             "ttc_reward": self.config["ttc_reward_weight"] * ttc_reward,
             "collision_penalty": self.config["collision_penalty"] if self.vehicle.crashed else 0,
@@ -388,8 +393,6 @@ class MergeinEnvSalih(MergeinEnv):
 
     def _is_terminated(self) -> bool:
         """The episode is over when a collision occurs or when the access ramp has been passed."""
-        # print("crash" + str(self.vehicle.crashed))
-        # print("over"  + str(self.vehicle.position[0] > 370))
         return self.vehicle.crashed or bool(self.vehicle.position[0] > 370)
 
 
@@ -459,6 +462,9 @@ class MergeinEnvSalih(MergeinEnv):
             speed = speed #+= self.np_random.uniform(-1, 1)
             road.vehicles.append(other_vehicles_type(road, position, speed=speed))
         
+
+
+
         # Add a vehicle before and after the ego vehicle on the merging lane
 
         # merge_lane = road.network.get_lane(("b", "c", 0))

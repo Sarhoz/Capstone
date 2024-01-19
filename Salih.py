@@ -96,7 +96,7 @@ def DRL_Models():
 
     #model_creation("DQN")
     #model_creation("PPO")
-    model_creation("TRPO")
+    #model_creation("TRPO")
 
     # Load model
     #model = DQN.load("highway_dqn/model")
