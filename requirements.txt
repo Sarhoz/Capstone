@@ -6,7 +6,7 @@ matplotlib==3.8.2
 numpy==1.26.3
 opencv-python==4.9.0.80
 sb3-contrib==2.2.1
-stable-baselines3==2.2.1
+stable-baselines3[extra]==2.2.1
 
 --find-links https://download.pytorch.org/whl/cu121/torch_stable.html
 torch==2.1.2+cu121
