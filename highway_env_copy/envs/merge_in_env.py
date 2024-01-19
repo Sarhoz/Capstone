@@ -34,6 +34,7 @@ class MergeinEnv(AbstractEnv):
             "reward_speed_range": [20, 30],
             "merging_speed_reward": -0.5,
             "lane_change_reward": -0.05,
+            "other_vehicles": 9
         })
         return cfg
 
@@ -54,6 +55,7 @@ class MergeinEnv(AbstractEnv):
 
     def _rewards(self, action: int) -> Dict[Text, float]:
         #print("action of reward:", action)
+        ttc_reward = self._compute_ttc()
         scaled_speed = utils.lmap(self.vehicle.speed, self.config["reward_speed_range"], [0, 1])
         return {
             "collision_reward": self.vehicle.crashed,
