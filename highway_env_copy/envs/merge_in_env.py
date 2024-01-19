@@ -22,10 +22,9 @@ class MergeinEnv(AbstractEnv):
     vehicles.
     """
 
-    print('default')
-
     @classmethod
     def default_config(cls) -> dict:
+        print('default')
         cfg = super().default_config()
         cfg.update({
             "collision_reward": -1,
@@ -153,10 +152,9 @@ class MergeinEnv(AbstractEnv):
 class MergeinEnvArno(MergeinEnv):
     "new merge-in environment made by Arno"
 
-    print('Arno')
-
     @classmethod
     def default_config(cls) -> dict:
+        print('Arno')
         cfg = super().default_config()
         cfg.update({
             "collision_reward": -1,
@@ -165,9 +163,26 @@ class MergeinEnvArno(MergeinEnv):
             "reward_speed_range": [20, 30],
             "merging_speed_reward": -0.5,
             "lane_change_reward": -0.05,
-
         })
         return cfg
+
+    def _reward(self, action: int) -> float:
+        """
+        The vehicle is rewarded for driving with high speed on lanes to the right and avoiding collisions
+
+        But an additional altruistic penalty is also suffered if any vehicle on the merging lane has a low speed.
+
+        :param action: the action performed
+        :return: the reward of the state-action transition
+        """
+        check = [self.config.get(name, 0) * reward for name, reward in self._rewards(action).items()]
+        reward = sum(self.config.get(name, 0) * reward for name, reward in self._rewards(action).items())
+        print(check, reward)
+        return utils.lmap(reward,
+                          [self.config["collision_reward"] + self.config["merging_speed_reward"],
+                           self.config["high_speed_reward"] + self.config["right_lane_reward"]],
+                          [0, 1])
+
 
     def _rewards(self, action: int) -> Dict[Text, float]:
         scaled_speed = utils.lmap(self.vehicle.speed, self.config["reward_speed_range"], [0, 1])
@@ -175,7 +190,7 @@ class MergeinEnvArno(MergeinEnv):
             "collision_reward": self.vehicle.crashed,
             "right_lane_reward": self.vehicle.lane_index[2] / 1,
             "high_speed_reward": scaled_speed,
-            "lane_change_reward": action in [0, 2],
+            #"lane_change_reward": action in [0, 2],
             "merging_speed_reward": sum(  # Altruistic penalty
                 (vehicle.target_speed - vehicle.speed) / vehicle.target_speed
                 for vehicle in self.road.vehicles
@@ -185,16 +200,14 @@ class MergeinEnvArno(MergeinEnv):
     
     # Sarhoz
 class MergeinEnvSarhoz(MergeinEnv):
+    def __init__(self, config=None, render_mode=None):
+        super().__init__(config)
+        self.render_mode = render_mode
+
     @classmethod
     def default_config(cls) -> dict:
-        config = super().default_config()
-        config.update({
-                "action": {
-                "type": "ContinuousAction",
-                "longitudinal": True,
-                "lateral": True,
-                "target_speeds": [20, 30]
-                },
+        cfg = super().default_config()
+        cfg.update({
                 "collision_reward": -1,
                 "lane_centering_cost": 4,
                 "lane_centering_reward": 1,
@@ -203,16 +216,16 @@ class MergeinEnvSarhoz(MergeinEnv):
                 "reward_speed_range": [20, 30],
                 "merging_speed_reward": -0.5,
                 })
-        return config
+        return cfg
     
     def _reward(self, action: np.ndarray) -> float:
         reward = 0
         rewards = self._rewards(action)
         reward = sum(self.config.get(name, 0) * reward for name, reward in rewards.items())
         reward = utils.lmap(reward, [self.config["collision_reward"], 1], [0, 1])
-        print("Is vehicle on the road:", self.vehicle.on_road)
+        #print("Is vehicle on the road:", self.vehicle.on_road)
         reward *= rewards["on_road_reward"]
-        print(reward)
+        #print(reward)
         return reward
 
     def _rewards(self, action: np.ndarray) -> Dict[Text, float]:
@@ -233,7 +246,7 @@ class MergeinEnvSarhoz(MergeinEnv):
     
     def _is_terminated(self) -> bool:
         """The episode is over when a collision occurs or when the access ramp has been passed."""
-        return self.vehicle.crashed or bool(self.vehicle.position[0] > 370) or bool(self.vehicle.position[0] < -10)
+        return self.vehicle.crashed or bool(self.vehicle.position[0] > 370)
 
 
 #Salih Discrete rewards

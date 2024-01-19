@@ -246,6 +246,7 @@ class Vehicle(RoadObject):
             return self.position
 
     # --- Group ---
+        
     @property
     def destination_key(self) -> np.ndarray:
         if getattr(self, "route", None):
@@ -254,6 +255,7 @@ class Vehicle(RoadObject):
             return last_lane_index
         else:
             return self.position
+    
     # --- Group ---
 
 
@@ -304,7 +306,6 @@ class Vehicle(RoadObject):
         
     # End of added TTC
           
-
     def to_dict(self, origin_vehicle: "Vehicle" = None, observe_intentions: bool = True) -> dict:
         d = {
             'presence': 1,
@@ -434,7 +435,8 @@ class Performance:
                f" The average total distance of {n} measurements is: {np.average(self.travel_distance)} \n" \
                f" The average duration time is of {n} measurements is: {np.average(self.run_time)} \n" \
                f" The collision rate of {n} measurements is: {np.average(self.collision)} \n" \
-            #    f" The average minimal ttc of ', {n}, 'measurements is:', {np.average(self.min_ttc)} \n" \
+            #  f" The average minimal TTC of ', {n}, 'measurements is:', {np.average(self.min_ttc)} \n" \
+            #  f" The average TTC of ', {n}, 'measurements is:', {np.average(self.min_ttc)} \n" \
 
     def array_rep(self):
         n = self.measurements

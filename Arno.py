@@ -12,7 +12,7 @@ from highway_env_copy.vehicle.kinematics import Performance, Logger
 
 # Video
 frameSize = (1280,560)
-out = cv2.VideoWriter('video'+"-Merging"+'.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
+out = cv2.VideoWriter('video'+"-Merging-Arno"+'.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
 
 def model_creation(model_name: str):
     env = gym.make("merge-in-v1")
@@ -67,10 +67,11 @@ def DRL_Models():
     # model_creation("TRPO")
 
     # Load model
-    model = DQN.load("highway_dqn/model-baseline")
+    # model = DQN.load("highway_dqn/model-baseline")
     # model = PPO.load("highway_PPO/model-baseline")
     # model = TRPO.load("highway_TRPO/model-baseline")
 
+    model = TRPO.load("highway_TRPO/model-v3-50000-1sec-Salih")
     # model = TRPO.load("highway_trpo/model-cont-S1")
 
     env = gym.make('merge-in-v1', render_mode='rgb_array')
@@ -106,7 +107,7 @@ def DRL_Models():
         while not (done or truncated):
             action, _states = model.predict(obs, deterministic=True)
             obs, reward, done, truncated, info = env.step(action)
-            print(reward)
+            # print(reward)
             stepcounter += 1
             total_reward += reward
 
