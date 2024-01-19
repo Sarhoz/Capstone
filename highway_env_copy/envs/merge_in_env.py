@@ -24,7 +24,6 @@ class MergeinEnv(AbstractEnv):
 
     @classmethod
     def default_config(cls) -> dict:
-        print('default')
         cfg = super().default_config()
         cfg.update({
             "collision_reward": -1,
@@ -65,6 +64,7 @@ class MergeinEnv(AbstractEnv):
                 if vehicle.lane_index == ("b", "c", 2) and isinstance(vehicle, ControlledVehicle)
             )
         }
+   
 
     def _is_terminated(self) -> bool:
         """The episode is over when a collision occurs or when the access ramp has been passed."""
@@ -154,7 +154,6 @@ class MergeinEnvArno(MergeinEnv):
 
     @classmethod
     def default_config(cls) -> dict:
-        print('Arno')
         cfg = super().default_config()
         cfg.update({
             "collision_reward": -1,
@@ -252,7 +251,7 @@ class MergeinEnvSarhoz(MergeinEnv):
 #Salih Discrete rewards
 class MergeinEnvSalih(MergeinEnv):
     def __init__(self, config=None, render_mode=None):
-        print("Initializing MergeinEnvSalih")
+        # print("Initializing MergeinEnvSalih")
         super().__init__(config)
         self.render_mode = render_mode
 
@@ -314,7 +313,7 @@ class MergeinEnvSalih(MergeinEnv):
             obs_matrix = KinematicObservation(self, absolute=False, vehicles_count=self.config["other_vehicles"],
                                             normalize=False).observe()
             use_TTC = False
-            glob_TTC = float('inf')
+            self.glob_TTC = float('inf')
             for vehicle in range(1, len(obs_matrix)):
                 x_pos = obs_matrix[vehicle][1]
                 y_pos = -1 * obs_matrix[vehicle][2]
@@ -335,43 +334,34 @@ class MergeinEnvSalih(MergeinEnv):
                 else:
                     TTC = float('Inf')
                 if TTC > 0:  # just to be safe
-                    glob_TTC = min(glob_TTC, TTC)
+                    self.glob_TTC = min(self.glob_TTC, TTC)
 
-            if glob_TTC < 2:  # only care about TTC if crash is close
-                ttc_reward = 1 - 2 / glob_TTC
+            if self.glob_TTC < 2:  # only care about TTC if crash is close
+                ttc_reward = 1 - 2 / self.glob_TTC
             else:
                 ttc_reward = 0
             return ttc_reward
 
-    # def _compute_ttc(self):
-    #     ttc_reward = 0  # Initialize outside the loop
-    #     obs_matrix = KinematicObservation(self, absolute=False, vehicles_count=self.config["other_vehicles"],
-    #                                     normalize=False).observe()
-    #     for vehicle in range(1, len(obs_matrix)):
-    #         TTC = float('inf')  # Initialize TTC to infinity
-    #         x_pos = obs_matrix[vehicle][1]
-    #         y_pos = -1 * obs_matrix[vehicle][2]
-    #         pos_vec = [x_pos, y_pos]  # this is relative when absolute = False
-    #         vx = obs_matrix[vehicle][3]
-    #         vy = -1 * obs_matrix[vehicle][4]
-    #         vel_vec = [vx, vy]
-    #         print(vx, vy)
-    #         if np.dot(pos_vec, pos_vec) != 0 and np.dot(pos_vec, pos_vec) != 0:
-    #             proj_pos_vel = np.multiply(np.dot(vel_vec, pos_vec) / np.dot(pos_vec, pos_vec), pos_vec)
-    #             len_pos = np.linalg.norm(pos_vec)
-    #             len_proj = np.linalg.norm(proj_pos_vel)
-
-    #             if len_proj != 0:
-    #                 TTC = len_pos / len_proj
-    #             else:
-    #                 TTC = float('inf')
-
-    #             if TTC < 3:  # only care about TTC if crash is close
-    #                 ttc_reward += 1 - 3 / TTC
-    #     print(TTC)
-    #     print(ttc_reward)
-    #     return ttc_reward
     
+    def _info(self, obs, action) -> dict:
+        """
+        Return a dictionary of additional information
+
+        :param obs: current observation
+        :param action: current action
+        :return: info dict
+        """
+        info = {
+            "speed": self.vehicle.speed,
+            "crashed": self.vehicle.crashed,
+            "action": action,
+        }
+        try:
+            info["rewards"] = self._rewards(action)
+            info["TTC"] = self.glob_TTC
+        except NotImplementedError:
+            pass
+        return info
 
     def _compute_high_speed_reward(self) -> float:
         speed_range = self.config["reward_speed_range"]
