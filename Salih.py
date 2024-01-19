@@ -84,8 +84,8 @@ def model_creation(model_name: str):
              seed=None,
              device='cuda',
              _init_setup_model=True)
-        model.learn(50000)
-        model.save("highway_trpo/model-cont-S1")
+        model.learn(25000)
+        model.save("highway_trpo/model-Salih-V3-TTCprobleem")
     else:
         print("Input model does not exist!")
 
@@ -96,12 +96,12 @@ def DRL_Models():
 
     #model_creation("DQN")
     #model_creation("PPO")
-    #model_creation("TRPO")
+    model_creation("TRPO")
 
     # Load model
     #model = DQN.load("highway_dqn/model")
     #model = PPO.load("highway_ppo/model-S1") 
-    model = TRPO.load("model-v3-50000-1sec-Salih")
+    model = TRPO.load("highway_TRPO\model-Salih-V3-TTCprobleem")
 
     env.configure({
     "screen_width": 1280,
@@ -110,7 +110,7 @@ def DRL_Models():
     })
 
     pprint.pprint(env.config)
-
+    env.reset()
     #Performance and logger
     perfm = Performance()
     lolly = Logger()
@@ -136,7 +136,8 @@ def DRL_Models():
             obs, reward, done, truncated, info = env.step(action)
             stepcounter += 1
             total_reward += reward
-            # print(info)
+            print(info)
+            print(reward)
             lolly.file(ego_car)
 
             if info.get('crashed'):

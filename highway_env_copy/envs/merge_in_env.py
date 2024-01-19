@@ -249,11 +249,11 @@ class MergeinEnvSalih(MergeinEnv):
         cfg.update({
                 "collision_penalty": -1,
                 "right_lane_reward": 0.1,
-                "high_speed_reward": 0.2,
+                "high_speed_reward": 0.3,
                 "reward_speed_range": [20, 30],
                 "merging_speed_penalty": -0.5,
-                "lane_change_penalty": -0.05,
-                "ttc_reward_weight": 3,
+                "lane_change_penalty": -0.01,
+                "ttc_reward_weight": 1,
                 "other_vehicles": 9
         })
         return cfg
@@ -266,7 +266,7 @@ class MergeinEnvSalih(MergeinEnv):
         lane_change_penalty = rewards["lane_change_penalty"]
         high_speed_reward = rewards["high_speed_reward"]
         right_lane_reward = rewards["right_lane_reward"]
-
+        
         reward = (
             ttc_reward
             + collision_penalty
@@ -274,79 +274,104 @@ class MergeinEnvSalih(MergeinEnv):
             + high_speed_reward
             + right_lane_reward
         )
-
+        reward = sum(self.config.get(name, 0) * reward for name, reward in self._rewards(action).items())
         if self._is_terminated() and not self.vehicle.crashed:
             reward += 1
-        
-        return utils.lmap(reward, [0, 1], [self.config["collision_penalty"] + self.config["merging_speed_penalty"], 1])
+        #print(self.config["lane_change_penalty"])
+        #return utils.lmap(reward, [0, 1], [self.config["collision_penalty"] + self.config["merging_speed_penalty"] + self.config["lane_change_penaly"], 1])
+        return utils.lmap(reward,
+                          [self.config["collision_penalty"] + self.config["lane_change_penalty"],
+                           self.config["high_speed_reward"] + self.config["right_lane_reward"] + self.config["ttc_reward_weight"]],
+                          [0, 1])
     
     def _rewards(self, action):
         ttc_reward = self._compute_ttc()
+        merging_speed_penalty = self.config["merging_speed_penalty"] * self._compute_merging_speed_penalty()
         return {
             "ttc_reward": self.config["ttc_reward_weight"] * ttc_reward,
-            "collision_penalty": self.vehicle.crashed,
-            "lane_change_penalty": int(action in [0, 1]),  # Penalty for changing lanes
+            "collision_penalty": self.config["collision_penalty"] if self.vehicle.crashed else 0,
+            "lane_change_penalty": self.config["lane_change_penalty"] if action in [0, 2] else 0,  # Penalty for changing lanes
             "high_speed_reward": self._compute_high_speed_reward(),
-            "right_lane_reward": int(self.vehicle.lane_index[2] == 0),  # Reward for being in the rightmost lane
+            "right_lane_reward": self.config["right_lane_reward"] if self.vehicle.lane_index[2] == 0 else 0, # Reward for being in the rightmost lane
+            #"merging_speed_penalty": merging_speed_penalty,  
         }
-    
-    @staticmethod
-    def _compute_vehicle_ttc(ego_vehicle, other_vehicle):
-        ego_radius = ego_vehicle.LENGTH / 2
-        other_radius = other_vehicle.LENGTH / 2 
-        ego_position = ego_vehicle.position
-        other_position = other_vehicle.position
-        relative_position = ego_position - other_position
-        relative_speed = ego_vehicle.speed - other_vehicle.speed
-
-        time_to_collision = (
-            np.dot(relative_position, relative_speed)
-            / np.dot(relative_speed, relative_speed)
-        )
-        if time_to_collision < 0:
-            time_to_collision = float("inf")
-        else:
-            distance = np.linalg.norm(relative_position - time_to_collision * relative_speed)
-            if distance < ego_radius + other_radius:
-                return time_to_collision
-            else:
-                return float("inf")
 
     def _compute_ttc(self):
-        ttc_reward = 0  # Initialize outside the loop
-        obs_matrix = KinematicObservation(self, absolute=False, vehicles_count=self.config["other_vehicles"],
-                                        normalize=False).observe()
-        for vehicle in range(1, len(obs_matrix)):
-            TTC = float('inf')  # Initialize TTC to infinity
+            TTC = None
+            obs_matrix = KinematicObservation(self, absolute=False, vehicles_count=self.config["other_vehicles"],
+                                            normalize=False).observe()
             use_TTC = False
             glob_TTC = float('inf')
-            x_pos = obs_matrix[vehicle][1]
-            y_pos = -1 * obs_matrix[vehicle][2]
-            pos_vec = [x_pos, y_pos]  # this is relative when absolute = False
-            vx = obs_matrix[vehicle][3]
-            vy = -1 * obs_matrix[vehicle][4]
-            vel_vec = [vx, vy]
-            
-            if np.dot(pos_vec, pos_vec) != 0:
-                proj_pos_vel = np.multiply(np.dot(vel_vec, pos_vec) / np.dot(pos_vec, pos_vec), pos_vec)
-                len_pos = np.linalg.norm(pos_vec)
-                len_proj = np.linalg.norm(proj_pos_vel)
+            for vehicle in range(1, len(obs_matrix)):
+                x_pos = obs_matrix[vehicle][1]
+                y_pos = -1 * obs_matrix[vehicle][2]
+                pos_vec = [x_pos, y_pos]  # this is relative when absolute = False
+                vx = obs_matrix[vehicle][3]
+                vy = -1 * obs_matrix[vehicle][4]
+                vel_vec = [vx, vy]
+                if np.dot(pos_vec, pos_vec) != 0:
+                    proj_pos_vel = np.multiply(np.dot(vel_vec, pos_vec) / np.dot(pos_vec, pos_vec), pos_vec)
+                    len_pos = np.linalg.norm(pos_vec)
+                    len_proj = np.linalg.norm(proj_pos_vel)
 
-                if np.dot(pos_vec, pos_vec) != 0 and len_proj != 0:
-                    TTC = len_pos / len_proj
+                    if proj_pos_vel[0] * vel_vec[0] > 0 and proj_pos_vel[1] * vel_vec[1] > 0:  # collinear so TTC infinite
+                        TTC = float('Inf')
+                    else:
+                        TTC = len_pos / len_proj
+                       
                 else:
-                    TTC = float('inf')
+                    TTC = float('Inf')
+                if TTC > 0:  # just to be safe
+                    glob_TTC = min(glob_TTC, TTC)
 
-                if TTC < 3:  # only care about TTC if crash is close
-                    ttc_reward += 1 - 3 / TTC
+            if glob_TTC < 2:  # only care about TTC if crash is close
+                ttc_reward = 1 - 2 / glob_TTC
+            else:
+                ttc_reward = 0
+            return ttc_reward
 
-        return ttc_reward
+    # def _compute_ttc(self):
+    #     ttc_reward = 0  # Initialize outside the loop
+    #     obs_matrix = KinematicObservation(self, absolute=False, vehicles_count=self.config["other_vehicles"],
+    #                                     normalize=False).observe()
+    #     for vehicle in range(1, len(obs_matrix)):
+    #         TTC = float('inf')  # Initialize TTC to infinity
+    #         x_pos = obs_matrix[vehicle][1]
+    #         y_pos = -1 * obs_matrix[vehicle][2]
+    #         pos_vec = [x_pos, y_pos]  # this is relative when absolute = False
+    #         vx = obs_matrix[vehicle][3]
+    #         vy = -1 * obs_matrix[vehicle][4]
+    #         vel_vec = [vx, vy]
+    #         print(vx, vy)
+    #         if np.dot(pos_vec, pos_vec) != 0 and np.dot(pos_vec, pos_vec) != 0:
+    #             proj_pos_vel = np.multiply(np.dot(vel_vec, pos_vec) / np.dot(pos_vec, pos_vec), pos_vec)
+    #             len_pos = np.linalg.norm(pos_vec)
+    #             len_proj = np.linalg.norm(proj_pos_vel)
+
+    #             if len_proj != 0:
+    #                 TTC = len_pos / len_proj
+    #             else:
+    #                 TTC = float('inf')
+
+    #             if TTC < 3:  # only care about TTC if crash is close
+    #                 ttc_reward += 1 - 3 / TTC
+    #     print(TTC)
+    #     print(ttc_reward)
+    #     return ttc_reward
     
 
     def _compute_high_speed_reward(self) -> float:
         speed_range = self.config["reward_speed_range"]
         scaled_speed = utils.lmap(self.vehicle.speed, speed_range, [0, 1])
         return scaled_speed
+
+    def _compute_merging_speed_penalty(self):
+        merging_speed_penalty = sum(
+            (vehicle.target_speed - vehicle.speed) / vehicle.target_speed
+            for vehicle in self.road.vehicles
+            if vehicle.lane_index == ("b", "c", 2) and isinstance(vehicle, ControlledVehicle)
+        )
+        return merging_speed_penalty
 
     def _is_terminated(self) -> bool:
         """The episode is over when a collision occurs or when the access ramp has been passed."""
