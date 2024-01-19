@@ -11,7 +11,7 @@ warnings.filterwarnings("ignore")
 
 # Created environment
 def environment(environment_name: str, Action_type: bool):
-    env = gym.make(environment_name, render_mode = "rgb_array")
+    env = gym.make(environment_name)#, render_mode = "rgb_array")
     
     env.configure({
     "screen_width": 1280,
@@ -112,6 +112,8 @@ def performance_model(env, model, model_name: str, model_path: str, number_of_te
             print(info['TTC'])
             if info['TTC'] != float('inf'):
                 all_ttc.append(info['TTC'])
+            
+            print(info)
 
             lolly.file(ego_car)
             if info.get('crashed'):

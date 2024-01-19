@@ -18,7 +18,6 @@ class MergeinEnv(AbstractEnv):
 
     """
     A highway merge negotiation environment.
-
     The ego-vehicle is driving on a highway and approached a merge, with some vehicles incoming on the access ramp.
     It is rewarded for maintaining a high speed and avoiding collisions, but also making room for merging
     vehicles.
