@@ -180,7 +180,12 @@ def sequential_dir(root:str, return_path:bool=False):
         return path
 
 
-
+# Round to multiple function
+def round_to_mult(num: int, mult: int):
+    """
+    Round a number to the nearest multiple of a second number
+    """
+    return mult * round(num / mult)
 
 
 
