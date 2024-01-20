@@ -42,6 +42,9 @@ N_EVALUATIONS = 2
 N_TIMESTEPS = int(2e4)
 EVAL_FREQ = int(N_TIMESTEPS / N_EVALUATIONS)
 N_EVAL_EPISODES = 10
+N_TRAIN_ENVS = 12
+N_EVAL_ENVS = 12
+MP_CLS = SubprocVecEnv if N_TRAIN_ENVS > 1 else DummyVecEnv
 TIMEOUT = None     # int(60 * 15)
 PROGRESS = {
     "optimize": True,
@@ -49,13 +52,8 @@ PROGRESS = {
     }
 
 ALGO = "ppo"
-ROOT_PATH = "models/" + ALGO.upper() + "/tuning"
-# ALGO_PATH = sequential_dir(ROOT_PATH, return_path=True)
 ENV_ID = "merge-in-v0"
-N_TRAIN_ENVS = 12
-N_EVAL_ENVS = 12
-# N_TRAIN_ENVS = N_EVAL_ENVS = 4
-MP_CLS = SubprocVecEnv if N_TRAIN_ENVS > 1 else DummyVecEnv
+ROOT_PATH = "models/" + ALGO.upper() + "/merge_in_" + ENV_ID.split("-")[2] + "/tuning"
 
 DEFAULT_HYPERPARAMS = {
     "policy": "MlpPolicy",
