@@ -100,6 +100,7 @@ class MergeinEnv(AbstractEnv):
                 ttc_reward = 1 - 2 / self.glob_TTC
             else:
                 ttc_reward = 0
+
             return ttc_reward
 
     

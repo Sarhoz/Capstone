@@ -6,8 +6,8 @@ import os
 from typing import Any, Dict
 
 import gymnasium as gym
-from highway_env_copy.envs.merge_in_env import *
-# gym.register(id="merge-in-v0", entry_point="merge_in_env:MergeinEnv")
+#from highway_env_copy.envs.merge_in_env import *
+#gym.register(id="merge-in-v0", entry_point="merge_in_env:MergeinEnv")
 
 import optuna
 from optuna.pruners import MedianPruner
@@ -25,7 +25,7 @@ import torch.nn as nn
 EXPANSIVE = False
 N_TRIALS = 100
 N_JOBS = 1
-N_THREADS = -1
+N_THREADS = 1
 N_STARTUP_TRIALS = 5
 N_EVALUATIONS = 2
 N_TIMESTEPS = int(2e4)
@@ -38,7 +38,7 @@ PROGRESS = {
     "learn": True
     }
 
-ALGO = PPO
+ALGO = DQN
 ROOT_PATH = "models/" + ALGO.__name__ + "/tuning"
 ALGO_PATH = sequential_dir(ROOT_PATH, return_path=True)
 ENV_ID = "merge-in-v0"
