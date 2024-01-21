@@ -85,7 +85,7 @@ def model_creation(model_name: str):
              device='cuda',
              _init_setup_model=True)
         model.learn(25000)
-        model.save("highway_trpo/model-Salih-V3-TTCprobleem")
+        model.save("highway_trpo/model-Salih-V3-tuning2")
     else:
         print("Input model does not exist!")
 
@@ -101,7 +101,7 @@ def DRL_Models():
     # Load model
     #model = DQN.load("highway_dqn/model")
     #model = PPO.load("highway_ppo/model-S1") 
-    model = TRPO.load("highway_TRPO\model-Salih-V3-TTCprobleem")
+    model = TRPO.load("highway_TRPO\model-Salih-V3-tuning2.zip")
 
     env.configure({
     "screen_width": 1280,
@@ -170,7 +170,7 @@ def DRL_Models():
     
     #a stands for "append"
     with open("Performance.txt", "a") as file:
-        file.write(f"\n The TRPO with Salih rewards (v3) (no Tuning and DiscreteAction) (TTC threshold 1 sec) -- 100 runs -- merge \n \n")
+        file.write(f"\n The TRPO  with Salih rewards (v3) (no Tuning and DiscreteAction) (TTC threshold 1 sec) -- 100 runs -- merge \n \n")
         file.write(f"{perfm.string_rep()}")
         file.write(f"\n")
         file.write(f"{perfm.array_rep()}")
