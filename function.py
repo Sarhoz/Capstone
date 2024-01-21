@@ -35,7 +35,7 @@ def environment(environment_name: str, Action_type: bool):
 
 
 
-# Training/loading baseline models
+# Training/loading baseline models (with hyperparameter tuned)
 def baseline_models(model: str, env, iterations: int, rewards: bool):
     if model.upper() == "TRPO":
         model = TRPO("MlpPolicy", env,
@@ -53,6 +53,9 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
         model = PPO("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/baseline_PPO",
                      device="cuda",
+                     learning_rate=0.044,
+                     batch_size=32,
+                     gamma=0.999,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
@@ -65,6 +68,9 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
         model = DQN("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/baseline_DQN",
                      device="cuda",
+                     gamma=0.99,
+                     learning_rate=0.0043,
+                     batch_size=512,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")

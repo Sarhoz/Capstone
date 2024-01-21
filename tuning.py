@@ -53,7 +53,7 @@ PROGRESS = {
     "learn": False
     }
 
-ALGO = "ppo"
+ALGO = "dqn"
 ENV_ID = "merge-in-v0"
 ROOT_PATH = "models/" + ALGO.upper() + "/merge_in_" + ENV_ID.split("-")[2] + "/tuning"
 
