@@ -9,7 +9,7 @@ from function import environment, baseline_models, performance_model
 
 
 # Create Environment
-# env = environment("merge-in-v0", False)
+env = environment("merge-in-v0", False)
 
 # Creating the Baseline Models
 #baseline_models("DQN", env, 80000, False)
@@ -22,9 +22,9 @@ from function import environment, baseline_models, performance_model
 
 
 # Look at parameters of models
-study = joblib.load("models/PPO/merge_in_v0/tuning/run_2/study.pkl")
-print("Best trial until now:")
-print(" Value: ", study.best_trial.value)
-print(" Params: ")
-for key, value in study.best_trial.params.items():
-    print(f"    {key}: {value}")
+# study = joblib.load("models/PPO/merge_in_v0/tuning/run_2/study.pkl")
+# print("Best trial until now:")
+# print(" Value: ", study.best_trial.value)
+# print(" Params: ")
+# for key, value in study.best_trial.params.items():
+#     print(f"    {key}: {value}")
