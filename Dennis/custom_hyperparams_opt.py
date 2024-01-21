@@ -65,7 +65,7 @@ def sample_ppo_params(trial: optuna.Trial, expansive:bool=False) -> Dict[str, An
 
         activation_fn = {"tanh": nn.Tanh, "relu": nn.ReLU, "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[activation_fn_name]
         
-        print(f"Tuning expansively")
+        # print(f"Tuning expansively")
         return {
             "n_steps": n_steps,
             "batch_size": batch_size,
@@ -91,7 +91,7 @@ def sample_ppo_params(trial: optuna.Trial, expansive:bool=False) -> Dict[str, An
         gamma = trial.suggest_categorical("gamma", [0.9, 0.95, 0.98, 0.99, 0.995, 0.999, 0.9999])    # default = 0.99
         learning_rate = trial.suggest_float("learning_rate", 1e-5, 1, log=True)    # default = 0.0003 (3e-4)
         
-        print(f"Limited tuning")
+        # print(f"Limited tuning")
         return {
             "learning_rate": learning_rate,
             "gamma": gamma,
@@ -153,7 +153,7 @@ def sample_trpo_params(trial: optuna.Trial, expansive:bool=False) -> Dict[str, A
 
         activation_fn = {"tanh": nn.Tanh, "relu": nn.ReLU, "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[activation_fn_name]
 
-        print(f"Tuning expansively")
+        # print(f"Tuning expansively")
         return {
             "n_steps": n_steps,
             "batch_size": batch_size,
@@ -179,7 +179,7 @@ def sample_trpo_params(trial: optuna.Trial, expansive:bool=False) -> Dict[str, A
         gamma = trial.suggest_categorical("gamma", [0.9, 0.95, 0.98, 0.99, 0.995, 0.999, 0.9999])    # default = 0.99
         learning_rate = trial.suggest_float("learning_rate", 1e-5, 1, log=True)    # default = 0.001 (1e-3)
         
-        print(f"Limited tuning")
+        # print(f"Limited tuning")
         return {
             "learning_rate": learning_rate,
             "gamma": gamma,
@@ -215,7 +215,7 @@ def sample_dqn_params(trial: optuna.Trial, expansive:bool=False) -> Dict[str, An
 
         net_arch = {"tiny": [64], "small": [64, 64], "medium": [256, 256]}[net_arch_type]
 
-        print(f"Tuning expansively")
+        # print(f"Tuning expansively")
         return {
             "gamma": gamma,
             "learning_rate": learning_rate,
@@ -235,7 +235,7 @@ def sample_dqn_params(trial: optuna.Trial, expansive:bool=False) -> Dict[str, An
         learning_rate = trial.suggest_float("learning_rate", 1e-5, 1, log=True)    # default = 0.0001
         batch_size = trial.suggest_categorical("batch_size", [16, 32, 64, 100, 128, 256, 512])    # default = 32
 
-        print(f"Limited tuning")
+        # print(f"Limited tuning")
         return {
             "learning_rate": learning_rate,
             "gamma": gamma,
