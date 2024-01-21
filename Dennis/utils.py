@@ -158,13 +158,21 @@ def monkey_patcher(old, new, type:str="class"):
 
 # Sequential directory generator function
 def sequential_dir(root:str, return_path:bool=False):
-    dirs = os.listdir(root)
+    """
+    Create folder for next numbered run.
+    """
     latest_num = 0
-    for d in dirs:
-        try:
-            latest_num = max(latest_num, int(d.split("_")[1]))
-        except ValueError:
-            continue
+    
+    try:
+        dirs = os.listdir(root)
+        for d in dirs:
+            try:
+                latest_num = max(latest_num, int(d.split("_")[1]))
+            except ValueError:
+                continue
+    except OSError:
+        pass
+    
     path = root + "/run_" + str(latest_num+1)
     os.makedirs(path)
     
@@ -172,7 +180,12 @@ def sequential_dir(root:str, return_path:bool=False):
         return path
 
 
-
+# Round to multiple function
+def round_to_mult(num: int, mult: int):
+    """
+    Round a number to the nearest multiple of a second number
+    """
+    return mult * round(num / mult)
 
 
 

@@ -39,15 +39,15 @@ def environment(environment_name: str, Action_type: bool):
 def baseline_models(model: str, env, iterations: int, rewards: bool):
     if model.upper() == "TRPO":
         model = TRPO("MlpPolicy", env,
-                     tensorboard_log="Tensorboard_log/baseline_TRPO",
+                     tensorboard_log="Tensorboard_log/baseline_TRPO_TTC_Rewards",
                      device="cuda",
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
         if rewards:
-            model.save("highway_trpo/model-baseline-rewards")
+            model.save("highway_trpo/model-baseline-rewards_TTC")
         else:
-            model.save("highway_trpo/model-baseline")
+            model.save("highway_trpo/model-baseline_TTC")
         return model
     elif model.upper() == "PPO":
         model = PPO("MlpPolicy", env,
@@ -109,9 +109,12 @@ def performance_model(env, model, model_name: str, model_path: str, number_of_te
             action, _states = model.predict(obs, deterministic=True)
             obs, reward, done, truncated, info = env.step(action)
             total_reward += reward
-            print(info['TTC'])
-            if info['TTC'] != float('inf'):
+
+            # Only safe the important moments as the large numbers are not important!
+            if info['TTC'] <= 20:
                 all_ttc.append(info['TTC'])
+                print(info['TTC'])
+            
 
             lolly.file(ego_car)
             if info.get('crashed'):
@@ -152,8 +155,8 @@ def performance_model(env, model, model_name: str, model_path: str, number_of_te
     with open("Performance.txt", writing) as file:
         file.write(f"\n The {model_name} model with {temp} (DiscreteMeteAction) \n \n")
         file.write(f"{perfm.string_rep()}")
-        file.write(f"\n")
-        file.write(f"{perfm.array_rep()}")
+        file.write(f"\n The average TTC of {T} measurements is: {(sum(all_ttc) / len(all_ttc))}")
+        file.write(f"\n The minimum TTC of {T} measurements is: {min(all_ttc)} \n")
         file.write(f"\n\n")
 
     print('DONE')

@@ -18,7 +18,6 @@ class MergeinEnv(AbstractEnv):
 
     """
     A highway merge negotiation environment.
-
     The ego-vehicle is driving on a highway and approached a merge, with some vehicles incoming on the access ramp.
     It is rewarded for maintaining a high speed and avoiding collisions, but also making room for merging
     vehicles.
@@ -34,6 +33,7 @@ class MergeinEnv(AbstractEnv):
             "reward_speed_range": [20, 30],
             "merging_speed_reward": -0.5,
             "lane_change_reward": -0.05,
+            "other_vehicles": 9
         })
         return cfg
 
@@ -54,6 +54,7 @@ class MergeinEnv(AbstractEnv):
 
     def _rewards(self, action: int) -> Dict[Text, float]:
         #print("action of reward:", action)
+        ttc_reward = self._compute_ttc()
         scaled_speed = utils.lmap(self.vehicle.speed, self.config["reward_speed_range"], [0, 1])
         return {
             "collision_reward": self.vehicle.crashed,
@@ -99,6 +100,7 @@ class MergeinEnv(AbstractEnv):
                 ttc_reward = 1 - 2 / self.glob_TTC
             else:
                 ttc_reward = 0
+
             return ttc_reward
 
     
