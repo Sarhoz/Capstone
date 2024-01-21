@@ -4,6 +4,8 @@ from Dennis.utils import sequential_dir, round_to_mult
 import joblib
 import os
 from typing import Any, Dict
+import warnings
+warnings.filterwarnings("ignore")
 
 import gymnasium as gym
 #from highway_env_copy.envs.merge_in_env import *
