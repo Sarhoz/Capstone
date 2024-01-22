@@ -37,7 +37,7 @@ def environment(environment_name: str, Action_type: bool):
 def baseline_models(model: str, env, iterations: int, rewards: bool):
     if model.upper() == "TRPO":
         model = TRPO("MlpPolicy", env,
-                     tensorboard_log="Tensorboard_log/Merging_v0_model_TRPO",
+                     tensorboard_log="Tensorboard_log/Merging_v3_model_TRPO",
                      device="cuda",
                      learning_rate= 0.000103,
                      batch_size= 32,
@@ -116,6 +116,7 @@ def performance_model(env, model, model_name: str, model_path: str, number_of_te
             action, _states = model.predict(obs, deterministic=True)
             obs, reward, done, truncated, info = env.step(action)
             total_reward += reward
+            print(info)
 
             # Only safe the important moments as the large numbers are not important!
             if info['TTC'] <= 20:

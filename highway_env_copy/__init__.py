@@ -80,6 +80,12 @@ def register_highway_envs():
         id='merge-in-v3',
         entry_point='highway_env.envs:MergeinEnvSalih',
     )
+
+    #Salih Robustness check
+    register(
+        id='merge-in-v4',
+        entry_point='highway_env.envs:MergeinEnvSalih2',
+    )
     # ------------ All merge -------------------------
 
     # parking_env.py
