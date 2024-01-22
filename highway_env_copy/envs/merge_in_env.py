@@ -320,9 +320,9 @@ class MergeinEnvSalih(MergeinEnv):
                 "collision_penalty": -1, # changed from -1
                 "right_lane_reward": 0.3,
                 "high_speed_reward": 0.5, #Look at which value the car also brakes instead of only overtaking
-                "reward_speed_range": [24, 30], #speed range can differ
+                "reward_speed_range": [20, 30], #speed range can differ
                 "merging_speed_penalty": -0.5,
-                "lane_change_penalty": -0.3, #mogelijk hoger, nog kijken voor merging
+                "lane_change_penalty": -0.4, #mogelijk hoger, nog kijken voor merging
                 "ttc_reward_weight": 1,
                 "other_vehicles": 9
         })
@@ -358,7 +358,7 @@ class MergeinEnvSalih(MergeinEnv):
 
     def _rewards(self, action):
         ttc_reward = self._compute_ttc()
-        merging_speed_penalty = self.config["merging_speed_penalty"] * self._compute_merging_speed_penalty()
+        #merging_speed_penalty = self.config["merging_speed_penalty"] * self._compute_merging_speed_penalty()
 
         #for lane change penalty
         highway_lanes = ["a", "b", "c"]
@@ -450,7 +450,7 @@ class MergeinEnvSalih(MergeinEnv):
 
         # Constant reward for first half of speed range
         if self.vehicle.speed <= speed_midpoint:
-            return 0.5
+            return 0.3
         else:
             # For the second half, slowly increase the reward until the end of the speed range
             return utils.lmap(self.vehicle.speed, [speed_midpoint, speed_range[1]], [0.5, 1])
@@ -468,13 +468,13 @@ class MergeinEnvSalih(MergeinEnv):
     #     return gaussian_reward
 
 
-    def _compute_merging_speed_penalty(self):
-        merging_speed_penalty = sum(
-            (vehicle.target_speed - vehicle.speed) / vehicle.target_speed
-            for vehicle in self.road.vehicles
-            if vehicle.lane_index == ("b", "c", 2) and isinstance(vehicle, ControlledVehicle)
-        )
-        return merging_speed_penalty
+    # def _compute_merging_speed_penalty(self):
+    #     merging_speed_penalty = sum(
+    #         (vehicle.target_speed - vehicle.speed) / vehicle.target_speed
+    #         for vehicle in self.road.vehicles
+    #         if vehicle.lane_index == ("b", "c", 2) and isinstance(vehicle, ControlledVehicle)
+    #     )
+    #     return merging_speed_penalty
 
 
     def _reset(self) -> None:

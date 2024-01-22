@@ -84,7 +84,7 @@ def model_creation(model_name: str):
              seed=None,
              device='cuda',
              _init_setup_model=True)
-        model.learn(35000)
+        model.learn(25000)
         model.save("highway_trpo/model-Salih-V3-tuning3")
     else:
         print("Input model does not exist!")
@@ -96,7 +96,7 @@ def DRL_Models():
 
     #model_creation("DQN")
     #model_creation("PPO")
-    model_creation("TRPO")
+    #model_creation("TRPO")
 
     # Load model
     #model = DQN.load("highway_dqn/model")
