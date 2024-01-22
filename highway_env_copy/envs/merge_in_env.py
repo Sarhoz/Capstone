@@ -317,12 +317,12 @@ class MergeinEnvSalih(MergeinEnv):
     def default_config(cls) -> dict:
         cfg = super().default_config()
         cfg.update({
-                "collision_penalty": -2, # changed from -1 to -2
-                "right_lane_reward": 0.2,
+                "collision_penalty": -1, # changed from -1
+                "right_lane_reward": 0.3,
                 "high_speed_reward": 0.5, #Look at which value the car also brakes instead of only overtaking
-                "reward_speed_range": [20, 30], #speed range can differ
+                "reward_speed_range": [24, 30], #speed range can differ
                 "merging_speed_penalty": -0.5,
-                "lane_change_penalty": -0.1, #mogelijk hoger nog kijken voor merging
+                "lane_change_penalty": -0.3, #mogelijk hoger, nog kijken voor merging
                 "ttc_reward_weight": 1,
                 "other_vehicles": 9
         })
@@ -360,11 +360,23 @@ class MergeinEnvSalih(MergeinEnv):
         ttc_reward = self._compute_ttc()
         merging_speed_penalty = self.config["merging_speed_penalty"] * self._compute_merging_speed_penalty()
 
+        #for lane change penalty
+        highway_lanes = ["a", "b", "c"]
+        lane_change = action in [0, 2]
+        on_highway = self.vehicle.lane_index[1] in highway_lanes
+        was_on_highway = self.vehicle.previous_lane_index[1] in highway_lanes if self.vehicle.previous_lane_index else False
+        lane_change_penalty = 0
+        if lane_change and was_on_highway and on_highway:
+            lane_change_penalty = self.config["lane_change_penalty"]
         
+
+
+
+        #self.config["lane_change_penalty"] if action in [0, 2] else 0
         return {
             "ttc_reward": self.config["ttc_reward_weight"] * ttc_reward,
             "collision_penalty": self.config["collision_penalty"] if self.vehicle.crashed else 0,
-            "lane_change_penalty": self.config["lane_change_penalty"] if action in [0, 2] else 0 ,  # Penalty for changing lanes
+            "lane_change_penalty": lane_change_penalty ,  # Penalty for changing lanes
             "high_speed_reward": self._compute_high_speed_reward(),
             "right_lane_reward": self.config["right_lane_reward"] if self.vehicle.lane_index[1] == "c" else 0, # Reward for being in the rightmost lane
             #"merging_speed_penalty": merging_speed_penalty,  
@@ -426,12 +438,25 @@ class MergeinEnvSalih(MergeinEnv):
     #     return info
 
 
-  
+  #normal high speed reward
+    # def _compute_high_speed_reward(self) -> float:
+    #     speed_range = self.config["reward_speed_range"]
+    #     scaled_speed = utils.lmap(self.vehicle.speed, speed_range, [0, 1])
+    #     return scaled_speed
+    
     def _compute_high_speed_reward(self) -> float:
         speed_range = self.config["reward_speed_range"]
-        scaled_speed = utils.lmap(self.vehicle.speed, speed_range, [0, 1])
-        return scaled_speed
+        speed_midpoint = sum(speed_range) / 2
 
+        # Constant reward for first half of speed range
+        if self.vehicle.speed <= speed_midpoint:
+            return 0.5
+        else:
+            # For the second half, slowly increase the reward until the end of the speed range
+            return utils.lmap(self.vehicle.speed, [speed_midpoint, speed_range[1]], [0.5, 1])
+
+
+#gaussian high speed reward
     # def _compute_high_speed_reward(self) -> float:
     #     speed_range = self.config["reward_speed_range"]
     #     mean_speed = sum(speed_range) / 2

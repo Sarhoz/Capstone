@@ -142,3 +142,13 @@
 
 [20.026559347200553, 22.436473275221797, 16.79, 0.05]
 
+
+ The TRPO  with Salih rewards (v3) (no Tuning and DiscreteAction) (TTC threshold 1 sec) -- 100 runs -- merge 
+ 
+ The average speed of 100 measurements is: 20.359191674978952 
+ The average total distance of 100 measurements is: 22.30946986790908 
+ The average duration time is of 100 measurements is: 16.43 
+ The collision rate of 100 measurements is: 0.13 
+
+[20.359191674978952, 22.30946986790908, 16.43, 0.13]
+
