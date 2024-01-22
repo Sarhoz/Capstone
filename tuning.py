@@ -71,7 +71,7 @@ def objective(trial: optuna.Trial) -> float:
     # Sample hyperparameters.
     kwargs.update(SAMPLED_HYPERPARAMS(trial, EXPANSIVE))
     # Create the RL model.
-    model = ALGOS[ALGO](**kwargs)
+    model = ALGOS[ALGO.lower()](**kwargs)
     # Create env used for evaluation.
     eval_env = make_vec_env(ENV_ID, n_envs=N_EVAL_ENVS, vec_env_cls=MP_CLS)# if N_EVAL_ENVS > 1 else Monitor(gym.make(ENV_ID))
     # Create the callbacks that will periodically evaluate and report the performance.
@@ -150,16 +150,16 @@ def hyperparameter_tuning():
 
 
     # Show and save results
-        study.trials_dataframe().to_csv(ALGO_PATH + "/study_results.csv")
+    study.trials_dataframe().to_csv(ALGO_PATH + "/study_results.csv")
 
-        # try:
-        #     fig1 = plot_optimization_history(study)
-        #     fig2 = plot_param_importances(study)
+    # try:
+    #     fig1 = plot_optimization_history(study)
+    #     fig2 = plot_param_importances(study)
 
-        #     fig1.show()
-        #     fig2.show()
-        # except (ValueError, ImportError, RuntimeError):
-        #     pass
+    #     fig1.show()
+    #     fig2.show()
+    # except (ValueError, ImportError, RuntimeError):
+    #     pass
 
 
 if __name__ == "__main__":

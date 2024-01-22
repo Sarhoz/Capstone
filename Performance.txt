@@ -152,3 +152,14 @@
 
 [20.359191674978952, 22.30946986790908, 16.43, 0.13]
 
+
+ The TRPO model with baseline rewards (DiscreteMeteAction) 
+ 
+ The average speed of 500 measurements is: 20.035357407112897 
+ The average total distance of 500 measurements is: 22.54789551155651 
+ The average duration time is of 500 measurements is: 16.87 
+ The collision rate of 500 measurements is: 0.048 
+ The average TTC of 500 measurements is: 12.91154249059283
+ The minimum TTC of 500 measurements is: 1.3507351534187588 
+
+

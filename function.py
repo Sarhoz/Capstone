@@ -39,9 +39,9 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
         model = TRPO("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/Merging_v0_model_TRPO",
                      device="cuda",
-                     learning_rate= 0,
-                     batch_size= 0,
-                     gamma= 0,
+                     learning_rate= 0.000103,
+                     batch_size= 32,
+                     gamma= 0.999,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
