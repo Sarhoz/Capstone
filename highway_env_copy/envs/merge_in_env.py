@@ -684,19 +684,20 @@ class MergeinEnvExtraLane(MergeinEnv):
 
         for i in range(4):
             net.add_lane("a", "b", StraightLane([0, y[i]], [sum(ends[:2]), y[i]], line_types=line_type[i]))
-            net.add_lane("b", "c", StraightLane([sum(ends[:2]), y[i]], [sum(ends[:3]), y[i]], line_types=line_type_merge[i]))
+            net.add_lane("b", "c", StraightLane([sum(ends[:2]), y[i]], [sum(ends[:3]), y[i]], line_types=line_type[i]))
             net.add_lane("c", "d", StraightLane([sum(ends[:3]), y[i]], [sum(ends), y[i]], line_types=line_type[i]))
 
-        # Merging lane
+        # Merging lane attached to the rightmost lane "d"
         amplitude = 3.25
-        ljk = StraightLane([0, 6.5 + 4 + 4+ 4], [ends[0], 6.5 + 4 + 4+ 4], line_types=[c, c], forbidden=True)
+        ljk = StraightLane([0, 6.5 + 4 + 4 + 4+4], [ends[0], 6.5 + 4 + 4 + 4+4], line_types=[c, c], forbidden=True)
         lkb = SineLane(ljk.position(ends[0], -amplitude), ljk.position(sum(ends[:2]), -amplitude),
-                       amplitude, 2 * np.pi / (2*ends[1]), np.pi / 2, line_types=[c, c], forbidden=True)
+                    amplitude, 2 * np.pi / (2 * ends[1]), np.pi / 2, line_types=[c, c], forbidden=True)
         lbc = StraightLane(lkb.position(ends[1], 0), lkb.position(ends[1], 0) + [ends[2], 0],
-                           line_types=[n, c])
+                        line_types=[n, c])
         net.add_lane("j", "k", ljk)
-        net.add_lane("k", "d", lkb)
-        net.add_lane("d", "c", lbc)
+        net.add_lane("k", "b", lkb)
+        net.add_lane("b", "c", lbc)
+        
         road = Road(network=net, np_random=self.np_random, record_history=self.config["show_trajectories"])
         road.objects.append(Obstacle(road, lbc.position(ends[2], 0)))
         self.road = road
