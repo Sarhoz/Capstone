@@ -81,10 +81,16 @@ def register_highway_envs():
         entry_point='highway_env.envs:MergeinEnvSalih',
     )
 
-    #Salih Robustness check
+    #Salih Robustness Extra vehicles
     register(
         id='merge-in-v4',
-        entry_point='highway_env.envs:MergeinEnvSalih2',
+        entry_point='highway_env.envs:MergeinEnvExtraVehicles',
+    )
+
+    #Salih Robustness Extra lane
+    register(
+        id='merge-in-v5',
+        entry_point='highway_env.envs:MergeinEnvExtraLane',
     )
     # ------------ All merge -------------------------
 
