@@ -214,13 +214,7 @@ class MergeinEnvArno(MergeinEnv):
     def default_config(cls) -> dict:
         cfg = super().default_config()
         cfg.update({
-            "collision_reward": -1,
-            "right_lane_reward": 0.2,
-            "high_speed_reward": 0.2,
-            "reward_speed_range": [20, 30],
-            "merging_speed_reward": -0.5,
-            "lane_change_reward": -0.05,
-            "comfort_reward": 1
+            "comfort_reward": -1        # reward -1 so acts as a penalty
         })
         return cfg
 
@@ -233,42 +227,16 @@ class MergeinEnvArno(MergeinEnv):
         :param action: the action performed
         :return: the reward of the state-action transition
         """
-        # check = [self.config.get(name, 0) * reward for name, reward in self._rewards(action).items()]
         reward = sum(self.config.get(name, 0) * reward for name, reward in self._rewards(action).items())
-        # print(check, reward)
-        # return utils.lmap(reward,
-        #                   [self.config["collision_reward"] + self.config["merging_speed_reward"],
-        #                    self.config["high_speed_reward"] + self.config["right_lane_reward"]],
-        #                   [0, 1])
         return reward
 
 
     def _rewards(self, action: int) -> Dict[Text, float]:
-        scaled_speed = utils.lmap(self.vehicle.speed, self.config["reward_speed_range"], [0, 1])
-
-        #calculating the difference in speed
-        d_speed = self.vehicle.speed - self.old_speed if hasattr(self, "old_speed") else 0
-        self.old_speed = self.vehicle.speed
-
-        #calculating the change in steering angle
-
-
-        acc = abs(self.vehicle.action["acceleration"])
-        steer = abs(self.vehicle.action["steering"])
-        jerk = abs(self.vehicle.jerk)
 
         return {
-            # "collision_reward": self.vehicle.crashed,
-            # "right_lane_reward": self.vehicle.lane_index[2] / 1,
-            # "high_speed_reward": scaled_speed,
-            #"lane_change_reward": action in [0, 2],
-            # "merging_speed_reward": sum(  # Altruistic penalty
-            #     (vehicle.target_speed - vehicle.speed) / vehicle.target_speed
-            #     for vehicle in self.road.vehicles
-            #     if vehicle.lane_index == ("b", "c", 2) and isinstance(vehicle, ControlledVehicle)
-            # )
-            # "comfort_reward": d_speed
-            "comfort_reward": 0.2 * acc + 4 / np.pi * steer + 1.0 * jerk
+            "comfort_reward": (0.2 * abs(self.vehicle.action["acceleration"]) + 
+                               4 / np.pi * abs(self.vehicle.action["steering"]) + 
+                               1.0 * abs(self.vehicle.jerk))                                           #output is mostly between 0.0 and 0.5, occationally 1.0
         }
     
     # Sarhoz
