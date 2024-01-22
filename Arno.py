@@ -66,13 +66,7 @@ def DRL_Models():
     # model_creation("PPO")
     # model_creation("TRPO")
 
-    # Load model
-    # model = DQN.load("highway_dqn/model-baseline")
-    # model = PPO.load("highway_PPO/model-baseline")
-    # model = TRPO.load("highway_TRPO/model-baseline")
-
-    model = TRPO.load("highway_TRPO/model-v3-50000-1sec-Salih")
-    # model = TRPO.load("highway_trpo/model-cont-S1")
+    model = TRPO.load("models/TRPO/merge_in_v0/tuning/run_2/best_model/best_model")
 
     env = gym.make('merge-in-v1', render_mode='rgb_array')
     #env = gym.make('intersection-v1', render_mode='rgb_array')
@@ -107,7 +101,8 @@ def DRL_Models():
         while not (done or truncated):
             action, _states = model.predict(obs, deterministic=True)
             obs, reward, done, truncated, info = env.step(action)
-            # print(reward)
+            # print(obs)
+            print(reward)
             stepcounter += 1
             total_reward += reward
 
