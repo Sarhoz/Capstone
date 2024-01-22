@@ -33,45 +33,52 @@ def environment(environment_name: str, Action_type: bool):
     
     return env
 
-
-
-# Training/loading baseline models
+# Training/loading baseline models (with hyperparameter tuned)
 def baseline_models(model: str, env, iterations: int, rewards: bool):
     if model.upper() == "TRPO":
         model = TRPO("MlpPolicy", env,
-                     tensorboard_log="Tensorboard_log/baseline_TRPO_TTC_Rewards",
+                     tensorboard_log="Tensorboard_log/Merging_v0_model_TRPO",
                      device="cuda",
+                     learning_rate= 0,
+                     batch_size= 0,
+                     gamma= 0,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
         if rewards:
-            model.save("highway_trpo/model-baseline-rewards_TTC")
+            model.save("Training models/highway_trpo/Merging_v3_model_TRPO")
         else:
-            model.save("highway_trpo/model-baseline_TTC")
+            model.save("Training models/highway_trpo/Merging_v0_model_TRPO")
         return model
     elif model.upper() == "PPO":
         model = PPO("MlpPolicy", env,
-                     tensorboard_log="Tensorboard_log/baseline_PPO",
+                     tensorboard_log="Tensorboard_log/Merging_v0_model_PPO",
                      device="cuda",
+                     learning_rate=0.00015,
+                     batch_size=32,
+                     gamma=0.99,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
         if rewards:
-            model.save("highway_ppo/model-baseline-rewards")
+            model.save("Training models/highway_ppo/Merging_v3_model_PPO")
         else:
-            model.save("highway_ppo/model-baseline")
+            model.save("Training models/highway_ppo/Merging_v0_model_PPO")
         return model
     elif model.upper() == "DQN":
         model = DQN("MlpPolicy", env,
-                     tensorboard_log="Tensorboard_log/baseline_DQN",
+                     tensorboard_log="Tensorboard_log/Merging_v0_model_DQN",
                      device="cuda",
+                     gamma=0.99,
+                     learning_rate=0.0043,
+                     batch_size=512,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
         if rewards:
-            model.save("highway_dqn/model-baseline-rewards")
+            model.save("Training models/highway_dqn/Merging_v3_model_DQN")
         else:
-            model.save("highway_dqn/model-baseline")
+            model.save("Training models/highway_dqn/Merging_v0_model_DQN")
         return model
     else:
         print("The input algorithm does not exist!")
