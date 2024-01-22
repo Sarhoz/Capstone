@@ -17,7 +17,7 @@ frameSize = (1280,560)
 out = cv2.VideoWriter('video'+"-Merging"+'.avi', cv2.VideoWriter_fourcc(*'mp4v'), 16, frameSize)
 
 # Create enviromenent
-env = gym.make("merge-in-v5", render_mode = "rgb_array")
+env = gym.make("merge-in-v6", render_mode = "rgb_array")
 #env = gym.make("racetrack-v0", render_mode = "rgb_array")
 
 # env.configure({

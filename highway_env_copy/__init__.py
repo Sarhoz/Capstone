@@ -92,6 +92,12 @@ def register_highway_envs():
         id='merge-in-v5',
         entry_point='highway_env.envs:MergeinEnvExtraLane',
     )
+
+    #Extra randomness
+    register(
+        id='merge-in-v6',
+        entry_point='highway_env.envs:MergeinEnvRandom',
+    )
     # ------------ All merge -------------------------
 
     # parking_env.py
