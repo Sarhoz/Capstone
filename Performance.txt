@@ -153,6 +153,27 @@
 [20.359191674978952, 22.30946986790908, 16.43, 0.13]
 
 
+ The DQN model with baseline rewards (DiscreteMeteAction) 
+ 
+ The average speed of 500 measurements is: 28.297135551927408 
+ The average total distance of 500 measurements is: 23.035416395129666 
+ The average duration time is of 500 measurements is: 12.228 
+ The collision rate of 500 measurements is: 0.116 
+ The average TTC of 500 measurements is: 5.782648941486163
+ The minimum TTC of 500 measurements is: 0.4251294320065727 
+
+
+ The PPO model with baseline rewards (DiscreteMeteAction) 
+ 
+ The average speed of 500 measurements is: 20.030406743582528 
+ The average total distance of 500 measurements is: 22.454256356646304 
+ The average duration time is of 500 measurements is: 16.802 
+ The collision rate of 500 measurements is: 0.06 
+ The average TTC of 500 measurements is: 12.955417668186477
+ The minimum TTC of 500 measurements is: 1.2289491948070197 
+
+
+
  The TRPO model with baseline rewards (DiscreteMeteAction) 
  
  The average speed of 500 measurements is: 20.035357407112897 

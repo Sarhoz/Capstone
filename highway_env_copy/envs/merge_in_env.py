@@ -119,7 +119,7 @@ class MergeinEnv(AbstractEnv):
         }
         try:
             info["rewards"] = self._rewards(action)
-            # info["TTC"] = self.glob_TTC
+            info["TTC"] = self.glob_TTC
         except NotImplementedError:
             pass
         return info
@@ -386,8 +386,6 @@ class MergeinEnvSalih(MergeinEnv):
             lane_change_penalty = self.config["lane_change_penalty"]
         
 
-
-
         #self.config["lane_change_penalty"] if action in [0, 2] else 0
         return {
             "ttc_reward": self.config["ttc_reward_weight"] * ttc_reward,
@@ -398,78 +396,23 @@ class MergeinEnvSalih(MergeinEnv):
             #"merging_speed_penalty": merging_speed_penalty,  
         }
 
-    # def _compute_ttc(self):
-    #         TTC = None
-    #         obs_matrix = KinematicObservation(self, absolute=False, vehicles_count=self.config["other_vehicles"],
-    #                                         normalize=False).observe()
-    #         use_TTC = False
-    #         self.glob_TTC = float('inf')
-    #         for vehicle in range(1, len(obs_matrix)):
-    #             x_pos = obs_matrix[vehicle][1]
-    #             y_pos = -1 * obs_matrix[vehicle][2]
-    #             pos_vec = [x_pos, y_pos]  # this is relative when absolute = False
-    #             vx = obs_matrix[vehicle][3]
-    #             vy = -1 * obs_matrix[vehicle][4]
-    #             vel_vec = [vx, vy]
-    #             if np.dot(pos_vec, pos_vec) != 0:
-    #                 proj_pos_vel = np.multiply(np.dot(vel_vec, pos_vec) / np.dot(pos_vec, pos_vec), pos_vec)
-    #                 len_pos = np.linalg.norm(pos_vec)
-    #                 len_proj = np.linalg.norm(proj_pos_vel)
-
-    #                 if proj_pos_vel[0] * vel_vec[0] > 0 and proj_pos_vel[1] * vel_vec[1] > 0:  # collinear so TTC infinite
-    #                     TTC = float('Inf')
-    #                 else:
-    #                     TTC = len_pos / len_proj
-                       
-    #             else:
-    #                 TTC = float('Inf')
-    #             if TTC > 0:  # just to be safe
-    #                 self.glob_TTC = min(self.glob_TTC, TTC)
-
-    #         if self.glob_TTC < 2:  # only care about TTC if crash is close
-    #             ttc_reward = 1 - 2 / self.glob_TTC
-    #         else:
-    #             ttc_reward = 0
-    #         return ttc_reward
-
-    
-    # def _info(self, obs, action) -> dict:
-    #     """
-    #     Return a dictionary of additional information
-
-    #     :param obs: current observation
-    #     :param action: current action
-    #     :return: info dict
-    #     """
-    #     info = {
-    #         "speed": self.vehicle.speed,
-    #         "crashed": self.vehicle.crashed,
-    #         "action": action,
-    #     }
-    #     try:
-    #         info["rewards"] = self._rewards(action)
-    #         info["TTC"] = self.glob_TTC
-    #     except NotImplementedError:
-    #         pass
-    #     return info
-
 
   #normal high speed reward
-    # def _compute_high_speed_reward(self) -> float:
-    #     speed_range = self.config["reward_speed_range"]
-    #     scaled_speed = utils.lmap(self.vehicle.speed, speed_range, [0, 1])
-    #     return scaled_speed
-    
     def _compute_high_speed_reward(self) -> float:
         speed_range = self.config["reward_speed_range"]
-        speed_midpoint = sum(speed_range) / 2
+        scaled_speed = utils.lmap(self.vehicle.speed, speed_range, [0, 1])
+        return scaled_speed
+    
+    # def _compute_high_speed_reward(self) -> float:
+    #     speed_range = self.config["reward_speed_range"]
+    #     speed_midpoint = sum(speed_range) / 2
 
-        # Constant reward for first half of speed range
-        if self.vehicle.speed <= speed_midpoint:
-            return 0.3
-        else:
-            # For the second half, slowly increase the reward until the end of the speed range
-            return utils.lmap(self.vehicle.speed, [speed_midpoint, speed_range[1]], [0.5, 1])
+    #     # Constant reward for first half of speed range
+    #     if self.vehicle.speed <= speed_midpoint:
+    #         return 0.3
+    #     else:
+    #         # For the second half, slowly increase the reward until the end of the speed range
+    #         return utils.lmap(self.vehicle.speed, [speed_midpoint, speed_range[1]], [0.5, 1])
 
 
 #gaussian high speed reward
