@@ -231,6 +231,12 @@ class MDPVehicle(ControlledVehicle):
         self.speed_index = self.speed_to_index(self.target_speed)
         self.target_speed = self.index_to_speed(self.speed_index)
 
+        self.previous_lane_index = self.lane_index
+
+    def step(self, dt: float):
+        self.previous_lane_index = self.lane_index  # Update previous lane index before stepping
+        super().step(dt)
+
     def act(self, action: Union[dict, str] = None) -> None:
         """
         Perform a high-level action.
@@ -240,6 +246,9 @@ class MDPVehicle(ControlledVehicle):
 
         :param action: a high-level action
         """
+        self.previous_lane_index = self.lane_index  # Update previous lane index before acting
+        super().act(action)
+
         if action == "FASTER":
             self.speed_index = self.speed_to_index(self.speed) + 1
         elif action == "SLOWER":

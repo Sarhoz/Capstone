@@ -1,3 +1,137 @@
+ The PPO with base rewards (no Tuning and DiscreteMetaAction) 
+ 
+ The average speed of 50 measurements is: 26.92672806092073 
+ The average peak jerk of 50 measurements is: 0.09033712962673342 
+ The average total jerk of 50 measurements is: 0.12202062789887219 
+ The average total distance of 50 measurements is: 22.192704285122744 
+ The average total steering of 50 measurements is: 0.06819198332603417 
+ The average duration time is of 50 measurements is: 12.42 
+ The on_lane rate of 50 measurements is: 1.0 
+ The collision rate of 50 measurements is: 0.18 
+
+[26.92672806092073, 0.09033712962673342, 0.12202062789887219, 22.192704285122744, 0.06819198332603417, 12.42, 1.0, 0.18]
+
+
+ The TRPO with base rewards (no Tuning and DiscreteMetaAction) 
+ 
+ The average speed of 50 measurements is: 20.056829466606487 
+ The average peak jerk of 50 measurements is: 0.013932570226584933 
+ The average total jerk of 50 measurements is: 0.02297568138466803 
+ The average total distance of 50 measurements is: 22.606128263315284 
+ The average total steering of 50 measurements is: 0.13097634823500276 
+ The average duration time is of 50 measurements is: 16.9 
+ The on_lane rate of 50 measurements is: 1.0 
+ The collision rate of 50 measurements is: 0.02 
+
+[20.056829466606487, 0.013932570226584933, 0.02297568138466803, 22.606128263315284, 0.13097634823500276, 16.9, 1.0, 0.02]
+
+
+ The DQN with base rewards (no Tuning and DiscreteMetaAction) 
+ 
+ The average speed of 50 measurements is: 25.600425636544593 
+ The average peak jerk of 50 measurements is: 0.017681286606253205 
+ The average total jerk of 50 measurements is: 0.08978039937868156 
+ The average total distance of 50 measurements is: 23.179391241721238 
+ The average total steering of 50 measurements is: 0.0941429618201958 
+ The average duration time is of 50 measurements is: 13.62 
+ The on_lane rate of 50 measurements is: 1.0 
+ The collision rate of 50 measurements is: 0.06 
+
+[25.600425636544593, 0.017681286606253205, 0.08978039937868156, 23.179391241721238, 0.0941429618201958, 13.62, 1.0, 0.06]
+
+
+ The TRPO with base rewards (no Tuning and DiscreteMetaAction) -- 800 runs 
+ 
+ The average speed of 800 measurements is: 20.025570652845925 
+ The average peak jerk of 800 measurements is: 0.021210727824160714 
+ The average total jerk of 800 measurements is: 0.03080040366833087 
+ The average total distance of 800 measurements is: 22.423347988310184 
+ The average total steering of 800 measurements is: 0.13138340715065422 
+ The average duration time is of 800 measurements is: 16.7825 
+ The on_lane rate of 800 measurements is: 1.0 
+ The collision rate of 800 measurements is: 0.06375 
+
+[20.025570652845925, 0.021210727824160714, 0.03080040366833087, 22.423347988310184, 0.13138340715065422, 16.7825, 1.0, 0.06375]
+
+ The TRPO with base rewards (v0) (no Tuning and DiscreteAction) -- 100 runs -- merge 
+ 
+ The average speed of 100 measurements is: 20.032339781813615 
+ The average peak jerk of 100 measurements is: 0.04206736045531054 
+ The average total jerk of 100 measurements is: 0.05152769888088356 
+ The average total distance of 100 measurements is: 22.292578428819137 
+ The average total steering of 100 measurements is: 0.11550120971576422 
+ The average duration time is of 100 measurements is: 16.68 
+ The on_lane rate of 100 measurements is: 1.0 
+ The collision rate of 100 measurements is: 0.1 
+
+[20.032339781813615, 0.04206736045531054, 0.05152769888088356, 22.292578428819137, 0.11550120971576422, 16.68, 1.0, 0.1]
+
+ The TRPO with Salih rewards (v3) (no Tuning and DiscreteAction) (TTC threshold 1 sec) -- 100 runs -- merge 
+ 
+ The average speed of 100 measurements is: 29.29129518571548 
+ The average peak jerk of 100 measurements is: 0.04474306119643888 
+ The average total jerk of 100 measurements is: 0.05705055626079887 
+ The average total distance of 100 measurements is: 21.237358542476958 
+ The average total steering of 100 measurements is: 0.08669181407371816 
+ The average duration time is of 100 measurements is: 10.85 
+ The on_lane rate of 100 measurements is: 1.0 
+ The collision rate of 100 measurements is: 0.47 
+
+[29.29129518571548, 0.04474306119643888, 0.05705055626079887, 21.237358542476958, 0.08669181407371816, 10.85, 1.0, 0.47]
+
+
+ The TRPO with Salih rewards (v3) (no Tuning and DiscreteAction) (TTC threshold 1 sec) -- 100 runs -- merge 
+ 
+ The average speed of 100 measurements is: 26.35873140674381 
+ The average peak jerk of 100 measurements is: 0.036262047021697434 
+ The average total jerk of 100 measurements is: 0.06303844395972645 
+ The average total distance of 100 measurements is: 23.073408209238988 
+ The average total steering of 100 measurements is: 0.15401194236371002 
+ The average duration time is of 100 measurements is: 13.14 
+ The on_lane rate of 100 measurements is: 1.0 
+ The collision rate of 100 measurements is: 0.13 
+
+[26.35873140674381, 0.036262047021697434, 0.06303844395972645, 23.073408209238988, 0.15401194236371002, 13.14, 1.0, 0.13]
+
+ The DQN model with baseline rewards (DiscreteMeteAction) 
+ 
+ The average speed of 10 measurements is: 29.421969398799597 
+ The average total distance of 10 measurements is: 21.522710256820822 
+ The average duration time is of 10 measurements is: 11.0 
+ The collision rate of 10 measurements is: 0.5 
+
+[29.421969398799597, 21.522710256820822, 11.0, 0.5]
+
+
+ The TRPO model with baseline rewards (DiscreteMeteAction) 
+ 
+ The average speed of 50 measurements is: 20.045707137616624 
+ The average total distance of 50 measurements is: 22.598931272459954 
+ The average duration time is of 50 measurements is: 16.9 
+ The collision rate of 50 measurements is: 0.02 
+
+[20.045707137616624, 22.598931272459954, 16.9, 0.02]
+
+
+ The TRPO model with baseline rewards (DiscreteMeteAction) 
+ 
+ The average speed of 5 measurements is: 29.914120829032072 
+ The average total distance of 5 measurements is: 23.92270874612884 
+ The average duration time is of 5 measurements is: 12.0 
+ The collision rate of 5 measurements is: 0.0 
+
+[29.914120829032072, 23.92270874612884, 12.0, 0.0]
+
+
+ The TRPO model with baseline rewards (DiscreteMeteAction) 
+ 
+ The average speed of 5 measurements is: 20.060620591309075 
+ The average total distance of 5 measurements is: 22.743957920585665 
+ The average duration time is of 5 measurements is: 17.0 
+ The collision rate of 5 measurements is: 0.0 
+
+[20.060620591309075, 22.743957920585665, 17.0, 0.0]
+
 
  The TRPO  with Salih rewards (v3) (no Tuning and DiscreteAction) (TTC threshold 1 sec) -- 100 runs -- merge 
  
@@ -9,25 +143,14 @@
 [20.026559347200553, 22.436473275221797, 16.79, 0.05]
 
 
- The DQN model with baseline rewards (DiscreteMeteAction) 
+ The TRPO  with Salih rewards (v3) (no Tuning and DiscreteAction) (TTC threshold 1 sec) -- 100 runs -- merge 
  
- The average speed of 500 measurements is: 28.297135551927408 
- The average total distance of 500 measurements is: 23.035416395129666 
- The average duration time is of 500 measurements is: 12.228 
- The collision rate of 500 measurements is: 0.116 
- The average TTC of 500 measurements is: 5.782648941486163
- The minimum TTC of 500 measurements is: 0.4251294320065727 
+ The average speed of 100 measurements is: 20.359191674978952 
+ The average total distance of 100 measurements is: 22.30946986790908 
+ The average duration time is of 100 measurements is: 16.43 
+ The collision rate of 100 measurements is: 0.13 
 
-
- The PPO model with baseline rewards (DiscreteMeteAction) 
- 
- The average speed of 500 measurements is: 20.030406743582528 
- The average total distance of 500 measurements is: 22.454256356646304 
- The average duration time is of 500 measurements is: 16.802 
- The collision rate of 500 measurements is: 0.06 
- The average TTC of 500 measurements is: 12.955417668186477
- The minimum TTC of 500 measurements is: 1.2289491948070197 
-
+[20.359191674978952, 22.30946986790908, 16.43, 0.13]
 
 
  The TRPO model with baseline rewards (DiscreteMeteAction) 
