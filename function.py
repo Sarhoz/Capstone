@@ -83,6 +83,47 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
     else:
         print("The input algorithm does not exist!")
 
+
+def tuned_reward_models(model: str, env, iterations: int):
+    if model.upper() == "TRPO":
+        model = TRPO("MlpPolicy", env,
+                     tensorboard_log="Tensorboard_log/Merging_v3_model_Tuned_TRPO",
+                     device="cuda",
+                     learning_rate= 0.0,
+                     batch_size= 0,
+                     gamma= 0.0,
+                     verbose=1)
+        model.learn(iterations, progress_bar=True)
+        print(f"{model} has finished training with {iterations} iterations!")
+        model.save("Training models/highway_trpo/Merging_v3_model_Tuned_TRPO")
+        return model
+    elif model.upper() == "PPO":
+        model = PPO("MlpPolicy", env,
+                     tensorboard_log="Tensorboard_log/Merging_v0_model_Tuned_PPO",
+                     device="cuda",
+                     learning_rate=0.0,
+                     batch_size=0,
+                     gamma=0.0,
+                     verbose=1)
+        model.learn(iterations, progress_bar=True)
+        print(f"{model} has finished training with {iterations} iterations!")
+        model.save("Training models/highway_ppo/Merging_v3_model_Tuned_PPO")
+        return model
+    elif model.upper() == "DQN":
+        model = DQN("MlpPolicy", env,
+                     tensorboard_log="Tensorboard_log/Merging_v0_model_Tuned_DQN",
+                     device="cuda",
+                     gamma=0.0,
+                     learning_rate=0.0,
+                     batch_size=0,
+                     verbose=1)
+        model.learn(iterations, progress_bar=True)
+        print(f"{model} has finished training with {iterations} iterations!")
+        model.save("Training models/highway_dqn/Merging_v3_model_Tuned_DQN")
+        return model
+    else:
+        print("The input algorithm does not exist!")
+
 # Check the Performance of a model
 def performance_model(env, model, model_name: str, model_path: str, number_of_tests: int, video_name:str, i: int, base_reward: bool):
 
@@ -116,12 +157,13 @@ def performance_model(env, model, model_name: str, model_path: str, number_of_te
             action, _states = model.predict(obs, deterministic=True)
             obs, reward, done, truncated, info = env.step(action)
             total_reward += reward
-            print(info)
+            #print("info: ", info)
+            print("Reward in functions: ", reward)
 
             # Only safe the important moments as the large numbers are not important!
-            if info['TTC'] <= 20:
-                all_ttc.append(info['TTC'])
-                print(info['TTC'])
+            # if info['TTC'] <= 20:
+            #     all_ttc.append(info['TTC'])
+            #     print("TTC under 20: ", info['TTC'])
             
 
             lolly.file(ego_car)

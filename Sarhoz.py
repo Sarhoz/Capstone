@@ -11,10 +11,18 @@ from function import environment, baseline_models, performance_model
 # Create Environment
 env = environment("merge-in-v3", False)
 
-# Creating the Baseline Models
+# Creating the Baseline Models ---> Used for requirement 1 and requirement 2
 #baseline_models("DQN", env, 50000, False)
-#baseline_models("PPO", env, 50000, False)
-#baseline_models("TRPO", env, 75000, True)
+#baseline_models("PPO", env, 50000, True)
+baseline_models("TRPO", env, 20000, True)
+
+# Creating the Reward models with tuning ---> requirement 3
+#Tuned_reward_models("DQN", 50000)
+#Tuned_reward_models("PPO", 50000)
+#Tuned_reward_models("TRPO", 50000)
+
+# Creating the best model
+# ...
 
 # Look at the Performance
 performance = performance_model(env=env, model=TRPO, model_path="Training models\highway_TRPO\Merging_v3_model_TRPO.zip", model_name="TRPO",
