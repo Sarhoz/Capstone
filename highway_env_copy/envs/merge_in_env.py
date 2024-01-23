@@ -363,23 +363,22 @@ class MergeinEnvSalih(MergeinEnv):
     def _reward(self, action):
         reward = 0.0
         
-        #reward += self.vehicle.lane_index[2] / 1
-        #reward += self._compute_ttc()
-        #print(f"TTC reward = {self._compute_ttc()} and reward = {reward}")
+        reward += self._compute_ttc()
+        #print(f"TTC penalty = {self._compute_ttc()} and reward = {reward}")
 
         # PROB THIS DOES NOT WORK AND MAKES IT GO TO MIDDLE
-        #reward += self._compute_high_speed_reward() * 3
+        reward += self._compute_high_speed_reward() * 2
         #print(f"compute high speed = {self._compute_high_speed_reward()} and reward = {reward}")
 
         #if action in [0,2]:
         #    reward -= 0.01
         #    print(f"lane change applied and reward = {reward}")
         if self.vehicle.lane_index[1] == "c":
-            reward += 2
+            reward += 3
         #    print(f"right lane applied and reward is {reward}")
-        #reward -= (0.2 * abs(self.vehicle.action["acceleration"]) + 
-        #                        4 / np.pi * abs(self.vehicle.action["steering"]) + 
-        #                        1.0 * abs(self.vehicle.jerk))
+        reward -= (0.2 * abs(self.vehicle.action["acceleration"]) + 
+                                4 / np.pi * abs(self.vehicle.action["steering"]) + 
+                                1.0 * abs(self.vehicle.jerk))
         #print("comfort penalty is ", {(0.2 * abs(self.vehicle.action["acceleration"]) + 
         #                        4 / np.pi * abs(self.vehicle.action["steering"]) + 
         #                        1.0 * abs(self.vehicle.jerk))}, "and reward is", reward)
@@ -388,8 +387,8 @@ class MergeinEnvSalih(MergeinEnv):
         #    print("car crashed")
             return -100
         
-        # if self._is_terminated() and not self.vehicle.crashed:
-        #     reward += 20
+        if self._is_terminated() and not self.vehicle.crashed:
+            reward += 20
         #    print("Car finished!")
         #print("Reward in merge_in" ,reward)
         return reward
