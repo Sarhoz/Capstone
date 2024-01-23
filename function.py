@@ -33,15 +33,18 @@ def environment(environment_name: str, Action_type: bool):
     
     return env
 
-# Training/loading baseline models (with hyperparameter tuned)
+# Training/loading baseline models (with hyperparameters tuned)
+# No tuning models created by commenting learning_rate, batch_size, gamma ---> tuning done by uncommenting these parameters
+# These files for merging V0 (none tuning and tuning) created with this function (by changing the logging names)
+# Also used this for merging V3 baseline (no tuning)
 def baseline_models(model: str, env, iterations: int, rewards: bool):
     if model.upper() == "TRPO":
         model = TRPO("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/Merging_v3_model_TRPO",
                      device="cuda",
-                     learning_rate= 0.000103,
-                     batch_size= 32,
-                     gamma= 0.999,
+                    #  learning_rate= 0.000103,
+                    #  batch_size= 32,
+                    #  gamma= 0.999,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
@@ -52,11 +55,11 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
         return model
     elif model.upper() == "PPO":
         model = PPO("MlpPolicy", env,
-                     tensorboard_log="Tensorboard_log/Merging_v0_model_PPO",
+                     tensorboard_log="Tensorboard_log/Merging_v3_model_PPO",
                      device="cuda",
-                     learning_rate=0.00015,
-                     batch_size=32,
-                     gamma=0.99,
+                    #  learning_rate=0.00015,
+                    #  batch_size=32,
+                    #  gamma=0.99,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
@@ -67,11 +70,11 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
         return model
     elif model.upper() == "DQN":
         model = DQN("MlpPolicy", env,
-                     tensorboard_log="Tensorboard_log/Merging_v0_model_DQN",
+                     tensorboard_log="Tensorboard_log/Merging_v3_model_DQN",
                      device="cuda",
-                     gamma=0.99,
-                     learning_rate=0.0043,
-                     batch_size=512,
+                    #  gamma=0.99,
+                    #  learning_rate=0.0043,
+                    #  batch_size=512,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
@@ -158,12 +161,12 @@ def performance_model(env, model, model_name: str, model_path: str, number_of_te
             obs, reward, done, truncated, info = env.step(action)
             total_reward += reward
             #print("info: ", info)
-            print("Reward in functions: ", reward)
+            #print("Reward in functions: ", reward)
 
             # Only safe the important moments as the large numbers are not important!
-            # if info['TTC'] <= 20:
-            #     all_ttc.append(info['TTC'])
-            #     print("TTC under 20: ", info['TTC'])
+            if info['TTC'] <= 20:
+                all_ttc.append(info['TTC'])
+                print("TTC under 20: ", info['TTC'])
             
 
             lolly.file(ego_car)
@@ -179,6 +182,7 @@ def performance_model(env, model, model_name: str, model_path: str, number_of_te
 
         rewards.append(total_reward)
         T+=1
+        print(T)
         perfm.add_measurement(lolly)
         lolly.clear_log()
     

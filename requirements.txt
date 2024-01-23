@@ -10,3 +10,4 @@ stable-baselines3[extra]==2.2.1
 
 --find-links https://download.pytorch.org/whl/cu121/torch_stable.html
 torch==2.1.2+cu121
+# Install tenserboard_log 
