@@ -89,7 +89,7 @@ def sample_ppo_params(trial: optuna.Trial, expansive:bool=False) -> Dict[str, An
         # Model parameters
         batch_size = trial.suggest_categorical("batch_size", [8, 16, 32, 64, 128, 256, 512])    # default = 64
         gamma = trial.suggest_categorical("gamma", [0.9, 0.95, 0.98, 0.99, 0.995, 0.999, 0.9999])    # default = 0.99
-        learning_rate = trial.suggest_float("learning_rate", 1e-5, 1, log=True)    # default = 0.0003 (3e-4)
+        learning_rate = trial.suggest_float("learning_rate", 1e-5, 0.01, log=True)    # default = 0.0003 (3e-4)
         
         # print(f"Limited tuning")
         return {
@@ -177,7 +177,7 @@ def sample_trpo_params(trial: optuna.Trial, expansive:bool=False) -> Dict[str, A
         # Model parameters
         batch_size = trial.suggest_categorical("batch_size", [8, 16, 32, 64, 128, 256, 512])    # default = 64
         gamma = trial.suggest_categorical("gamma", [0.9, 0.95, 0.98, 0.99, 0.995, 0.999, 0.9999])    # default = 0.99
-        learning_rate = trial.suggest_float("learning_rate", 1e-5, 1, log=True)    # default = 0.001 (1e-3)
+        learning_rate = trial.suggest_float("learning_rate", 1e-5, 0.01, log=True)    # default = 0.001 (1e-3)
         
         # print(f"Limited tuning")
         return {
@@ -232,7 +232,7 @@ def sample_dqn_params(trial: optuna.Trial, expansive:bool=False) -> Dict[str, An
     else:
         # Model parameters
         gamma = trial.suggest_categorical("gamma", [0.9, 0.95, 0.98, 0.99, 0.995, 0.999, 0.9999])    # default = 0.99
-        learning_rate = trial.suggest_float("learning_rate", 1e-5, 1, log=True)    # default = 0.0001
+        learning_rate = trial.suggest_float("learning_rate", 1e-5, 0.01, log=True)    # default = 0.0001
         batch_size = trial.suggest_categorical("batch_size", [16, 32, 64, 100, 128, 256, 512])    # default = 32
 
         # print(f"Limited tuning")

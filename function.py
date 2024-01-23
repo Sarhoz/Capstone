@@ -42,9 +42,9 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
         model = TRPO("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/Merging_v3_model_TRPO",
                      device="cuda",
-                    #  learning_rate= 0.000103,
-                    #  batch_size= 32,
-                    #  gamma= 0.999,
+                     learning_rate= 0.000103,
+                     batch_size= 32,
+                     gamma= 0.999,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
@@ -57,9 +57,9 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
         model = PPO("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/Merging_v3_model_PPO",
                      device="cuda",
-                    #  learning_rate=0.00015,
-                    #  batch_size=32,
-                    #  gamma=0.99,
+                     learning_rate=0.00015,
+                     batch_size=32,
+                     gamma=0.99,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
@@ -72,9 +72,9 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
         model = DQN("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/Merging_v3_model_DQN",
                      device="cuda",
-                    #  gamma=0.99,
-                    #  learning_rate=0.0043,
-                    #  batch_size=512,
+                     gamma=0.99,
+                     learning_rate=0.0043,
+                     batch_size=512,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")

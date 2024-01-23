@@ -58,6 +58,7 @@ The TRPO model with baseline rewards (DiscreteMeteAction)
  
 
 ----- modified rewards -----
+
  The TRPO model with modified rewards (DiscreteMeteAction) 
  
  The average speed of 500 measurements is: 26.622889049329636 

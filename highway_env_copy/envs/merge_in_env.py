@@ -315,6 +315,7 @@ class MergeinEnvSalih(MergeinEnv):
             reward += 3
             #print(f"right lane applied and reward is {reward}")
 
+        # Conform'd
         reward -= (0.2 * abs(self.vehicle.action["acceleration"]) + 
                                 4 / np.pi * abs(self.vehicle.action["steering"]) + 
                                 1.0 * abs(self.vehicle.jerk))

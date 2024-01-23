@@ -41,7 +41,7 @@ N_JOBS = 1      # way slower training when > 1
 N_THREADS = 1
 N_STARTUP_TRIALS = 5
 N_EVALUATIONS = 2
-N_TIMESTEPS = int(2e4)
+N_TIMESTEPS = int(5e4)
 EVAL_FREQ = int(N_TIMESTEPS / N_EVALUATIONS)
 N_EVAL_EPISODES = 10
 N_TRAIN_ENVS = 12
@@ -53,8 +53,8 @@ PROGRESS = {
     "learn": False
     }
 
-ALGO = "dqn"
-ENV_ID = "merge-in-v0"
+ALGO = "trpo"
+ENV_ID = "merge-in-v3"
 ROOT_PATH = "models/" + ALGO.upper() + "/merge_in_" + ENV_ID.split("-")[2] + "/tuning"
 
 DEFAULT_HYPERPARAMS = {
