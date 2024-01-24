@@ -86,15 +86,15 @@ def baseline_models(model: str, env, iterations: int, rewards: bool):
     else:
         print("The input algorithm does not exist!")
 
-
+# Function made for tuning models of modified reward system
 def tuned_reward_models(model: str, env, iterations: int):
     if model.upper() == "TRPO":
         model = TRPO("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/Merging_v3_model_Tuned_TRPO",
                      device="cuda",
-                     learning_rate= 0.0,
-                     batch_size= 0,
-                     gamma= 0.0,
+                     learning_rate= 3.84e-05,
+                     batch_size= 128,
+                     gamma= 0.95,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
@@ -102,7 +102,7 @@ def tuned_reward_models(model: str, env, iterations: int):
         return model
     elif model.upper() == "PPO":
         model = PPO("MlpPolicy", env,
-                     tensorboard_log="Tensorboard_log/Merging_v0_model_Tuned_PPO",
+                     tensorboard_log="Tensorboard_log/Merging_v3_model_Tuned_PPO",
                      device="cuda",
                      learning_rate=0.0,
                      batch_size=0,
@@ -114,11 +114,11 @@ def tuned_reward_models(model: str, env, iterations: int):
         return model
     elif model.upper() == "DQN":
         model = DQN("MlpPolicy", env,
-                     tensorboard_log="Tensorboard_log/Merging_v0_model_Tuned_DQN",
+                     tensorboard_log="Tensorboard_log/Merging_v3_model_Tuned_DQN",
                      device="cuda",
-                     gamma=0.0,
-                     learning_rate=0.0,
-                     batch_size=0,
+                     gamma=0.98,
+                     learning_rate=0.00066,
+                     batch_size=16,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
