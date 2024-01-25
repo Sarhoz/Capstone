@@ -92,9 +92,9 @@ def tuned_reward_models(model: str, env, iterations: int):
         model = TRPO("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/Merging_v3_model_Tuned_TRPO",
                      device="cuda",
-                     learning_rate= 3.6931978466449305e-05,
+                     learning_rate= 3.846887e-05,
                      batch_size= 128,
-                     gamma= 0.995,
+                     gamma= 0.95,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
