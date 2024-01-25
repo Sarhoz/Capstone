@@ -91,26 +91,38 @@ The TRPO model with baseline rewards (DiscreteMeteAction)
 
 ----- Tuned below ---- 
 
- The DQN model with modified rewards (DiscreteMeteAction) --- tuned
+
+ The DQN model with modified rewards (DiscreteMeteAction) 
  
- The average speed of 500 measurements is: 29.738305238991153 
- The average total distance of 500 measurements is: 23.090447393842965 
- The average duration time is of 500 measurements is: 11.636 
- The collision rate of 500 measurements is: 0.124 
-
- The average TTC of 500 measurements is: 4.839846680098552
- The minimum TTC of 500 measurements is: 0.5301336439892624 
-
+ The average speed of 500 measurements is: 29.76065745798 
+ The average total distance of 500 measurements is: 23.214196834722888 
+ The average duration time is of 500 measurements is: 11.694 
+ The collision rate of 500 measurements is: 0.098 
+ The average TTC of 500 measurements is: 4.914036494129829
+ The minimum TTC of 500 measurements is: 0.5097797411508898 
 
 
- The TRPO model with modified rewards (DiscreteMeteAction) --- tuned
+
+ The TRPO model with modified rewards (DiscreteMeteAction) 
  
- The average speed of 500 measurements is: 27.52664898676001 
- The average total distance of 500 measurements is: 22.640495311353703 
- The average duration time is of 500 measurements is: 12.364 
- The collision rate of 500 measurements is: 0.088 
+ The average speed of 500 measurements is: 27.398219088394303 
+ The average total distance of 500 measurements is: 22.521813447860826 
+ The average duration time is of 500 measurements is: 12.358 
+ The collision rate of 500 measurements is: 0.108 
 
- The average TTC of 500 measurements is: 6.035505029678699
- The minimum TTC of 500 measurements is: 0.7557166705427187 
+ The average TTC of 500 measurements is: 6.073173715588256
+ The minimum TTC of 500 measurements is: 0.7583363956962764 
+
+
+
+ The TRPO model with modified rewards (DiscreteMeteAction) 
+ 
+ The average speed of 500 measurements is: 28.215103555622722 
+ The average total distance of 500 measurements is: 22.6229359281228 
+ The average duration time is of 500 measurements is: 12.048 
+ The collision rate of 500 measurements is: 0.116 
+
+ The average TTC of 500 measurements is: 5.660468247932926
+ The minimum TTC of 500 measurements is: 0.6857067760919522 
 
 

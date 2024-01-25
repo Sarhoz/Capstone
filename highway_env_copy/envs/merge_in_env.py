@@ -303,7 +303,7 @@ class MergeinEnvSalih(MergeinEnv):
     def _reward(self, action):
         reward = 0.0
 
-        reward += self._compute_ttc() * 1.1
+        reward += self._compute_ttc() * 0.5
         #print(f"TTC penalty = {self._compute_ttc()} and reward = {reward}")
 
         # PROB THIS DOES NOT WORK AND MAKES IT GO TO MIDDLE
@@ -322,11 +322,11 @@ class MergeinEnvSalih(MergeinEnv):
         
 
         if self._is_terminated() and not self.vehicle.crashed:
-            reward += 10
+            reward += 15
         #    print("Car finished!")
 
         # Scaling of reward (30 -> 50)
-        reward = reward / 40
+        reward = reward / 30
 
         if self.vehicle.crashed:
         #    print("car crashed")

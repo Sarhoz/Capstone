@@ -92,9 +92,9 @@ def tuned_reward_models(model: str, env, iterations: int):
         model = TRPO("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/Merging_v3_model_Tuned_TRPO",
                      device="cuda",
-                     learning_rate= 3.84e-05,
+                     learning_rate= 3.6931978466449305e-05,
                      batch_size= 128,
-                     gamma= 0.95,
+                     gamma= 0.995,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
@@ -104,9 +104,9 @@ def tuned_reward_models(model: str, env, iterations: int):
         model = PPO("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/Merging_v3_model_Tuned_PPO",
                      device="cuda",
-                     learning_rate=0.0,
-                     batch_size=0,
-                     gamma=0.0,
+                     learning_rate=3.693e-05,
+                     batch_size=64,
+                     gamma=0.95,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
@@ -116,9 +116,9 @@ def tuned_reward_models(model: str, env, iterations: int):
         model = DQN("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/Merging_v3_model_Tuned_DQN",
                      device="cuda",
-                     gamma=0.98,
-                     learning_rate=0.00066,
-                     batch_size=16,
+                     gamma=0.95,
+                     learning_rate=0.00072,
+                     batch_size=64,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
         print(f"{model} has finished training with {iterations} iterations!")
