@@ -14,7 +14,7 @@ utils.py: This contains a lot of different codes. For example: functions that cr
 2. models (folder) contains all the results of the hyperparameter tuning of the different DRL models for the different environments.  These are made by code ran in tuning.py. This folder does not contain any code.
 3. Tensorboard_log contains all the graphs of training all the different models in different environment.  These are made by code ran in main.py. This is used in Tensorboard environment. This folder does not contain any code.
 4. Training models contains all the created models of the project. These models are used in the performance functions. These are made by code ran in main.py. This folder does not contain any code.
-5. Video's.zip is a zip file that contains all the video's of the different models inside of different merge_in environments. These video are created by performance inside of main.py. This folder does not contain any code.
+5. Video's.zip is a zip file that contains all the video's of the different models inside of different merge_in environments. These video are created by performance inside of main.py. This folder does not contain any code. ----> This is not inside of this github as it is to large!
 
 
 # Runnable Code
