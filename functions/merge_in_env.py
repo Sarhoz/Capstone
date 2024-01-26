@@ -221,35 +221,32 @@ class MergeinReward(MergeinEnv):
     def _reward(self, action):
         reward = 0.0
 
+        # penalty for TTC
         reward += self._compute_ttc() * 0.5
-        #print(f"TTC penalty = {self._compute_ttc()} and reward = {reward}")
 
+        # Reward for speed
         reward += self._compute_high_speed_reward() * 8
-        #print(f"compute high speed = {self._compute_high_speed_reward()} and reward = {reward}")
 
-        #    print(f"lane change applied and reward = {reward}")
+        # Reward for right lane
         if self.vehicle.lane_index[1] == "c":
             reward += 2
-            #print(f"right lane applied and reward is {reward}")
 
-        # Conform'd
+        # Conform'd penalty
         reward -= 0.5 * (0.2 * abs(self.vehicle.action["acceleration"]) + 
                                 4 / np.pi * abs(self.vehicle.action["steering"]) + 
                                 1.0 * abs(self.vehicle.jerk))
         
-
+        # Reward for Finishing game without crashing
         if self._is_terminated() and not self.vehicle.crashed:
             reward += 15
-        #    print("Car finished!")
 
         # Scaling of reward
         reward = reward / 25
 
+        # Penalty of crash
         if self.vehicle.crashed:
-        #    print("car crashed")
             return -20
         
-        #print("Reward in merge_in" ,reward)
         return reward
 
 
@@ -258,15 +255,11 @@ class MergeinEnvCombine(MergeinReward):
         reward = 0.0
 
         reward += self._compute_ttc() * 0.5
-        #print(f"TTC penalty = {self._compute_ttc()} and reward = {reward}")
 
         reward += self._compute_high_speed_reward() * 8
-        #print(f"compute high speed = {self._compute_high_speed_reward()} and reward = {reward}")
 
-        #    print(f"lane change applied and reward = {reward}")
         if self.vehicle.lane_index[1] == "d":
             reward += 2
-            #print(f"right lane applied and reward is {reward}")
 
         # Conform'd
         reward -= 0.5 * (0.2 * abs(self.vehicle.action["acceleration"]) + 
@@ -276,16 +269,13 @@ class MergeinEnvCombine(MergeinReward):
 
         if self._is_terminated() and not self.vehicle.crashed:
             reward += 15
-        #    print("Car finished!")
 
         # Scaling of reward
         reward = reward / 25
 
         if self.vehicle.crashed:
-        #    print("car crashed")
             return -20
         
-        #print("Reward in merge_in" ,reward)
         return reward
     
     def _make_road(self) -> None:
