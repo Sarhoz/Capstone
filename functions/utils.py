@@ -417,7 +417,7 @@ def tuned_reward_models(model: str, env, iterations: int):
     else:
         print("The input algorithm does not exist!")
 
-# Best model (has still to be made --> tuning takes a couple of days)
+# Best model (has still to be made --> tuning takes a couple of days!)
 def best_model(env, iterations: int):
     model = TRPO("MlpPolicy", env,
                      policy=None,

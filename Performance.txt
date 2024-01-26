@@ -90,6 +90,23 @@ The TRPO model with baseline rewards (DiscreteMeteAction)
  The minimum TTC of 500 measurements is: 0.5798456226056404 
 
 ----- Modified rewards Tuned below ---- 
+
+The TRPO model with modified rewards (DiscreteMeteAction) 
  
+ The average speed of 500 measurements is: 28.02033457527531 
+ The average total distance of 500 measurements is: 22.814081905017257 
+ The average duration time is of 500 measurements is: 12.24 
+ The collision rate of 500 measurements is: 0.094 
+ The average TTC of 500 measurements is: 5.696384060873203
+ The minimum TTC of 500 measurements is: 0.7050431027647601
+ 
+ The PPO model with modified rewards (DiscreteMeteAction) 
+ 
+ The average speed of 500 measurements is: 29.71343331300303 
+ The average total distance of 500 measurements is: 23.310429086275143 
+ The average duration time is of 500 measurements is: 11.76 
+ The collision rate of 500 measurements is: 0.092 
+ The average TTC of 500 measurements is: 4.898288180024865
+ The minimum TTC of 500 measurements is: 0.4971117578735454 
 
 
