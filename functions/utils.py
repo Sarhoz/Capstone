@@ -529,8 +529,6 @@ def performance_model(env, model, model_name: str, model_path: str, number_of_te
     return perfm.array_rep()
 
 
-
+# Initialization of the environment and modify Vehicle class
 highway_env.vehicle.kinematics.Vehicle = monkey_patcher(highway_env.vehicle.kinematics.Vehicle, MyVehicle)
-
 register_cumstom_envs()
-# print("registered")

@@ -8,8 +8,6 @@ from torch import nn as nn
 from rl_zoo3 import linear_schedule
 
 
-
-
 def sample_ppo_params(trial: optuna.Trial, expansive:bool=False) -> Dict[str, Any]:
     """
     Sampler for PPO hyperparams.

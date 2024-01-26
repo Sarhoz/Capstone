@@ -22,8 +22,8 @@ env = environment("merge-in-v3", False)
 # tuned_reward_models("PPO",env, 100000)
 # tuned_reward_models("TRPO",env, 100000)
 
-# ---- The best possible model (not yet implemented; we are waiting for the tuning to be done as that takes days!)
-# best_model(emv, 100000)
+# ---- The best possible model (not yet implemented; we are waiting for the tuning to be done as that takes days!) ----
+# best_model(env, 100000)
 
 # Get the performance of a certain trained model ---> returns a video of the car merging and the performance of the car of the different situations
 # ---- number_of_test has to be larger than 1 ----

@@ -32,19 +32,18 @@ import torch
 import torch.nn as nn
 
 
-
+# Recommended Changable variables: N_trials, N_TIMESTEPS, N_TRAIN_ENVS, N_EVAL_ENVS, ALGO and ENV_ID
 EXPANSIVE = False
 COUNTED_STATES = [TrialState.COMPLETE, TrialState.RUNNING, TrialState.PRUNED]
-N_TRIALS = 2
+N_TRIALS = 100
 N_JOBS = 1      # way slower training when > 1
 N_THREADS = 1
 N_STARTUP_TRIALS = 5
 N_EVALUATIONS = 2
-N_TIMESTEPS = int(5e2)
+N_TIMESTEPS = int(5e4)
 EVAL_FREQ = int(N_TIMESTEPS / N_EVALUATIONS)
 N_EVAL_EPISODES = 10
-N_TRAIN_ENVS = 12
-N_EVAL_ENVS = 12
+N_TRAIN_ENVS = N_EVAL_ENVS = 12
 MP_CLS = SubprocVecEnv if N_TRAIN_ENVS > 1 else DummyVecEnv
 TIMEOUT = None     # int(60 * 15)
 PROGRESS = {
