@@ -204,91 +204,9 @@ class MergeinEnv(AbstractEnv):
         # road.vehicles.append(merging_v)
         self.vehicle = ego_vehicle
 
-class MergeinEnvArno(MergeinEnv):
-    "new merge-in environment made by Arno"
 
-    @classmethod
-    def default_config(cls) -> dict:
-        cfg = super().default_config()
-        cfg.update({
-            "comfort_reward": -1        # reward -1 so acts as a penalty
-        })
-        return cfg
-
-    def _reward(self, action: int) -> float:
-        """
-        The vehicle is rewarded for driving with high speed on lanes to the right and avoiding collisions
-
-        But an additional altruistic penalty is also suffered if any vehicle on the merging lane has a low speed.
-
-        :param action: the action performed
-        :return: the reward of the state-action transition
-        """
-        reward = sum(self.config.get(name, 0) * reward for name, reward in self._rewards(action).items())
-        return reward
-
-
-    def _rewards(self, action: int) -> Dict[Text, float]:
-
-        return {
-            "comfort_reward": (0.2 * abs(self.vehicle.action["acceleration"]) + 
-                               4 / np.pi * abs(self.vehicle.action["steering"]) + 
-                               1.0 * abs(self.vehicle.jerk))                                           #output is mostly between 0.0 and 0.5, occationally 1.0
-        }
-    
-    # Sarhoz
-class MergeinEnvSarhoz(MergeinEnv):
-    def __init__(self, config=None, render_mode=None):
-        super().__init__(config)
-        self.render_mode = render_mode
-
-    @classmethod
-    def default_config(cls) -> dict:
-        cfg = super().default_config()
-        cfg.update({
-                "collision_reward": -1,
-                "lane_centering_cost": 4,
-                "lane_centering_reward": 1,
-                "action_reward": -0.3,
-                "high_speed_reward": 0.2,
-                "reward_speed_range": [20, 30],
-                "merging_speed_reward": -0.5,
-                })
-        return cfg
-    
-    def _reward(self, action: np.ndarray) -> float:
-        reward = 0
-        rewards = self._rewards(action)
-        reward = sum(self.config.get(name, 0) * reward for name, reward in rewards.items())
-        reward = utils.lmap(reward, [self.config["collision_reward"], 1], [0, 1])
-        #print("Is vehicle on the road:", self.vehicle.on_road)
-        reward *= rewards["on_road_reward"]
-        #print(reward)
-        return reward
-
-    def _rewards(self, action: np.ndarray) -> Dict[Text, float]:
-        _, lateral = self.vehicle.lane.local_coordinates(self.vehicle.position)
-        scaled_speed = utils.lmap(self.vehicle.speed, self.config["reward_speed_range"], [0, 1])
-        return {
-            "lane_centering_reward": 1 / (1 + self.config["lane_centering_cost"] * lateral ** 2),
-            "action_reward": np.linalg.norm(action),
-            "collision_reward": self.vehicle.crashed,
-            "on_road_reward": self.vehicle.on_road,
-            "high_speed_reward": scaled_speed,
-            "merging_speed_reward": sum(  # Altruistic penalty
-                (vehicle.target_speed - vehicle.speed) / vehicle.target_speed
-                for vehicle in self.road.vehicles
-                if vehicle.lane_index == ("b", "c", 2) and isinstance(vehicle, ControlledVehicle)
-            )
-        }
-    
-    def _is_terminated(self) -> bool:
-        """The episode is over when a collision occurs or when the access ramp has been passed."""
-        return self.vehicle.crashed or bool(self.vehicle.position[0] > 370)
-
-
-#Salih Discrete rewards
-class MergeinEnvSalih(MergeinEnv):
+#DiscreteMetaAction rewards
+class MergeinReward(MergeinEnv):
 
     #normal high speed reward
     def _compute_high_speed_reward(self) -> float:
@@ -306,17 +224,16 @@ class MergeinEnvSalih(MergeinEnv):
         reward += self._compute_ttc() * 0.5
         #print(f"TTC penalty = {self._compute_ttc()} and reward = {reward}")
 
-        # PROB THIS DOES NOT WORK AND MAKES IT GO TO MIDDLE
         reward += self._compute_high_speed_reward() * 8
         #print(f"compute high speed = {self._compute_high_speed_reward()} and reward = {reward}")
 
         #    print(f"lane change applied and reward = {reward}")
         if self.vehicle.lane_index[1] == "c":
-            reward += 3
+            reward += 2
             #print(f"right lane applied and reward is {reward}")
 
         # Conform'd
-        reward -= (0.2 * abs(self.vehicle.action["acceleration"]) + 
+        reward -= 0.5 * (0.2 * abs(self.vehicle.action["acceleration"]) + 
                                 4 / np.pi * abs(self.vehicle.action["steering"]) + 
                                 1.0 * abs(self.vehicle.jerk))
         
@@ -325,8 +242,8 @@ class MergeinEnvSalih(MergeinEnv):
             reward += 15
         #    print("Car finished!")
 
-        # Scaling of reward (30 -> 50)
-        reward = reward / 30
+        # Scaling of reward
+        reward = reward / 25
 
         if self.vehicle.crashed:
         #    print("car crashed")

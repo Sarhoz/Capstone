@@ -64,21 +64,22 @@ def register_highway_envs():
         entry_point='highway_env.envs:MergeinEnv',
     )
 
-    register(
-        id='merge-in-v1',
-        entry_point='highway_env.envs:MergeinEnvArno',
-    )
-
-    #Sarhoz merge in
-    register(
-        id='merge-in-v2',
-        entry_point='highway_env.envs:MergeinEnvSarhoz',
-    )
-
-    #Salih merge in Reward
+    # Merge in Reward
     register(
         id='merge-in-v3',
-        entry_point='highway_env.envs:MergeinEnvSalih',
+        entry_point='highway_env.envs:MergeinReward',
+    )
+
+    # Merge in with extra vehicles
+    register(
+        id='merge-in-v4',
+        entry_point='highway_env.envs:MergeinEnvExtraVehicles',
+    )
+
+    # Merge in with an extra lane
+    register(
+        id='merge-in-v5',
+        entry_point='highway_env.envs:MergeinEnvExtraLane',
     )
     # ------------ All merge -------------------------
 
