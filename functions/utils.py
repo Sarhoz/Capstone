@@ -252,16 +252,10 @@ def register_cumstom_envs():
         entry_point='functions.merge_in_env:MergeinReward',
     )
 
-    # Merge in with extra vehicles
+    # Merge in with difficult environment (extra lane -- extra cars -- short merge in lane)
     gym.register(
         id='merge-in-v4',
-        entry_point='functions.merge_in_env:MergeinEnvExtraVehicles',
-    )
-
-    # Merge in with an extra lane
-    gym.register(
-        id='merge-in-v5',
-        entry_point='functions.merge_in_env:MergeinEnvExtraLane',
+        entry_point='functions.merge_in_env:MergeinEnvCombine',
     )
 
 
@@ -432,11 +426,11 @@ def best_model(env, iterations: int):
                      rollout_buffer_class=0.0,
                      normalize_advantage=False,
                      policy_kwargs=None,
-                     tensorboard_log="Tensorboard_log/Merging_v3_model_Tuned_TRPO",
+                     tensorboard_log="Tensorboard_log/Merging_v3_best_model",
                      device="cuda",
-                     gamma=0.95,
-                     learning_rate=3.846887458592866e-05,
-                     batch_size=128,
+                     gamma=0.0,
+                     learning_rate=0.0,
+                     batch_size=0,
                      verbose=1)
     model.learn(iterations, progress_bar=True)
     model.save("Training models/highway_TRPO/Merging_v3_model_Best_model")
@@ -536,11 +530,7 @@ def performance_model(env, model, model_name: str, model_path: str, number_of_te
 
 
 
-
-
 highway_env.vehicle.kinematics.Vehicle = monkey_patcher(highway_env.vehicle.kinematics.Vehicle, MyVehicle)
 
 register_cumstom_envs()
 # print("registered")
-
-
