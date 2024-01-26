@@ -110,3 +110,13 @@ The TRPO model with modified rewards (DiscreteMeteAction)
  The minimum TTC of 500 measurements is: 0.4971117578735454 
 
 
+ The DQN model with modified rewards (DiscreteMeteAction) 
+ 
+ The average speed of 500 measurements is: 29.78609553898588 
+ The average total distance of 500 measurements is: 23.267492986265605 
+ The average duration time is of 500 measurements is: 11.712 
+ The collision rate of 500 measurements is: 0.1 
+ The average TTC of 500 measurements is: 4.909628240134318
+ The minimum TTC of 500 measurements is: 0.4806813813192376 
+
+
