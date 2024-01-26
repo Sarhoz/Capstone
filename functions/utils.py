@@ -1,7 +1,6 @@
 """
 Utility file containing helper functions and custom classes.
 """
-# import test
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -149,23 +148,12 @@ class Logger:
         self.speed.append(v.speed)
         self.collision.append(v.crashed)
         self.travel_distance.append(
-            v.position_change)  # TODO modify to proper distance based on lane progression, in stead of car travel distance
+            v.position_change)
         self.duration += 1
-        # self.ttc.append(v._compute_ttc)
-        # self.right_lane.append(v.)
 
     @property
     def average_speed(self):
         return np.average(self.speed)
-    
-    # @property
-    # def minimum_ttc(self):
-    #     return np.min(self.ttc)
-
-    # @property
-    # def average_ttc(self):
-    #     return np.average(self.ttc)
-
 
     def get_cumulative_lane_time(self):
         return np.sum(self.lane_time)
@@ -187,8 +175,6 @@ class Performance:
         self.travel_distance = []
         self.run_time = []
         self.measurements = 0
-        # self.avg_ttc = []
-        # self.min_ttc = []
 
     def clear_measurements(self):
         self.__init__()
@@ -199,8 +185,6 @@ class Performance:
         self.run_time.append(log.duration)
         self.travel_distance.append(log.get_cumulative_distance())
         self.measurements += 1
-        # self.avg_ttc.append(log.average_ttc)
-        # self.min_ttc.append(log.minimum_ttc)
 
     def get_indicators(self):
         statistics = {
@@ -209,8 +193,6 @@ class Performance:
             'mileage': self.travel_distance,
             'run_times': self.run_time,
             'collisions': self.collision,
-            # 'min_ttc': self.avg_ttc,
-            # 'average ttc' : self.avg_ttc,
         }
         return statistics
 
@@ -220,9 +202,6 @@ class Performance:
         print('The average total distance of', n, 'measurements is:', np.average(self.travel_distance))
         print('The average duration time is of', n, 'measurements is:', np.average(self.run_time))
         print('The collision rate of', n, 'measurements is:', np.average(self.collision))
-        # print('The average minimal ttc of ', n, 'measurements is:', np.average(self.min_ttc))
-        # print('The average of the average ttc of ', n, 'measurements is:', np.average(self.min_ttc)) 
-        # Voegt niet zoveel toe
 
     def string_rep(self):
         n = self.measurements
@@ -230,8 +209,6 @@ class Performance:
                f" The average total distance of {n} measurements is: {np.average(self.travel_distance)} \n" \
                f" The average duration time is of {n} measurements is: {np.average(self.run_time)} \n" \
                f" The collision rate of {n} measurements is: {np.average(self.collision)} \n" \
-            #  f" The average minimal TTC of ', {n}, 'measurements is:', {np.average(self.min_ttc)} \n" \
-            #  f" The average TTC of ', {n}, 'measurements is:', {np.average(self.min_ttc)} \n" \
 
     def array_rep(self):
         n = self.measurements
@@ -419,8 +396,8 @@ def tuned_reward_models(model: str, env, iterations: int):
         model = PPO("MlpPolicy", env,
                      tensorboard_log="Tensorboard_log/Merging_v3_model_Tuned_PPO",
                      device="cuda",
-                     learning_rate=3.6931978466449305e-05,
-                     batch_size=128,
+                     learning_rate=0.0005565336168379374,
+                     batch_size=8,
                      gamma=0.995,
                      verbose=1)
         model.learn(iterations, progress_bar=True)
@@ -482,7 +459,7 @@ def performance_model(env, model, model_name: str, model_path: str, number_of_te
             # Only safe the important moments as the large numbers are not important!
             if info['TTC'] <= 20:
                 all_ttc.append(info['TTC'])
-                print("TTC under 20: ", info['TTC'])
+                #print("TTC under 20: ", info['TTC'])
             
 
             lolly.file(ego_car)
