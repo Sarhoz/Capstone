@@ -137,8 +137,6 @@ class Logger:
         self.speed = []  # float
         self.collision = []  # boolean
         self.travel_distance = []  # float
-        # self.ttc = [] #float
-        # self.right_lane = [] #float
         self.duration = 0  # len(self.speed)
 
     def clear_log(self):
@@ -419,6 +417,30 @@ def tuned_reward_models(model: str, env, iterations: int):
     else:
         print("The input algorithm does not exist!")
 
+# Best model (has still to be made --> tuning takes a couple of days)
+def best_model(env, iterations: int):
+    model = TRPO("MlpPolicy", env,
+                     policy=None,
+                     schedule=0,
+                     n_steps=0.0,
+                     cg_max_steps=0.0,
+                     cg_damping=0.0,
+                     line_search_shrinking_factor=0.0,
+                     line_search_max_iter=0.0,
+                     n_critic_updates=0.0,
+                     gae_lambda=0.0,
+                     rollout_buffer_class=0.0,
+                     normalize_advantage=False,
+                     policy_kwargs=None,
+                     tensorboard_log="Tensorboard_log/Merging_v3_model_Tuned_TRPO",
+                     device="cuda",
+                     gamma=0.95,
+                     learning_rate=3.846887458592866e-05,
+                     batch_size=128,
+                     verbose=1)
+    model.learn(iterations, progress_bar=True)
+    model.save("Training models/highway_TRPO/Merging_v3_model_Best_model")
+    return model
 
 # Check the Performance of a model
 def performance_model(env, model, model_name: str, model_path: str, number_of_tests: int, video_name:str, i: int, base_reward: bool):

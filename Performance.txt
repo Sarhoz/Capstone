@@ -89,7 +89,7 @@ The TRPO model with baseline rewards (DiscreteMeteAction)
  The average TTC of 500 measurements is: 4.894950245572012
  The minimum TTC of 500 measurements is: 0.5798456226056404 
 
------ Tuned below ---- 
+----- Modified rewards Tuned below ---- 
  
 
 
