@@ -2,12 +2,12 @@ from typing import Dict, Text
 
 import numpy as np
 
-from highway_env_copy import utils
-from highway_env_copy.envs.common.abstract import AbstractEnv
-from highway_env_copy.road.lane import LineType, StraightLane, SineLane
-from highway_env_copy.road.road import Road, RoadNetwork
-from highway_env_copy.vehicle.controller import ControlledVehicle
-from highway_env_copy.vehicle.objects import Obstacle
+from highway_env import utils
+from highway_env.envs.common.abstract import AbstractEnv
+from highway_env.road.lane import LineType, StraightLane, SineLane
+from highway_env.road.road import Road, RoadNetwork
+from highway_env.vehicle.controller import ControlledVehicle
+from highway_env.vehicle.objects import Obstacle
 # added
 from highway_env.envs.common.observation import TimeToCollisionObservation, KinematicObservation
 

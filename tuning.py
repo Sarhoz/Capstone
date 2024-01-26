@@ -1,5 +1,6 @@
-from Dennis.custom_hyperparams_opt import HYPERPARAMS_SAMPLER
-from Dennis.utils import sequential_dir, round_to_mult
+import functions
+from functions.custom_hyperparams_opt import HYPERPARAMS_SAMPLER
+from functions.utils import sequential_dir, round_to_mult
 
 import joblib
 import os
@@ -8,8 +9,6 @@ import warnings
 warnings.filterwarnings("ignore")
 
 import gymnasium as gym
-#from highway_env_copy.envs.merge_in_env import *
-#gym.register(id="merge-in-v0", entry_point="merge_in_env:MergeinEnv")
 
 import optuna
 # from optuna.integration.tensorboard import TensorBoardCallback
@@ -36,16 +35,16 @@ import torch.nn as nn
 
 EXPANSIVE = False
 COUNTED_STATES = [TrialState.COMPLETE, TrialState.RUNNING, TrialState.PRUNED]
-N_TRIALS = 100
+N_TRIALS = 2
 N_JOBS = 1      # way slower training when > 1
 N_THREADS = 1
 N_STARTUP_TRIALS = 5
 N_EVALUATIONS = 2
-N_TIMESTEPS = int(5e4)
+N_TIMESTEPS = int(5e2)
 EVAL_FREQ = int(N_TIMESTEPS / N_EVALUATIONS)
 N_EVAL_EPISODES = 10
-N_TRAIN_ENVS = 12
-N_EVAL_ENVS = 12
+N_TRAIN_ENVS = 6
+N_EVAL_ENVS = 6
 MP_CLS = SubprocVecEnv if N_TRAIN_ENVS > 1 else DummyVecEnv
 TIMEOUT = None     # int(60 * 15)
 PROGRESS = {
@@ -166,3 +165,8 @@ if __name__ == "__main__":
     ALGO_PATH = sequential_dir(ROOT_PATH, return_path=True)
     N_TIMESTEPS = round_to_mult(N_TIMESTEPS, 2048*N_TRAIN_ENVS)
     hyperparameter_tuning()
+    # env = gym.make("merge-in-v3")
+    # env.reset()
+    # ego_car = env.controlled_vehicles[0]
+    # print(ego_car.jerk)
+    # env.close()
