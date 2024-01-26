@@ -277,16 +277,10 @@ def register_cumstom_envs():
         entry_point='functions.merge_in_env:MergeinReward',
     )
 
-    # Merge in with extra vehicles
+    # Merge in mutated configuration
     gym.register(
         id='merge-in-v4',
-        entry_point='functions.merge_in_env:MergeinEnvExtraVehicles',
-    )
-
-    # Merge in with an extra lane
-    gym.register(
-        id='merge-in-v5',
-        entry_point='functions.merge_in_env:MergeinEnvExtraLane',
+        entry_point='functions.merge_in_env:MergeinEnvCombine',
     )
 
 
