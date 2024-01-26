@@ -10,6 +10,7 @@ import joblib
 
 
 
+
 # Create Environment
 env = environment("merge-in-v3", False)
 
@@ -27,8 +28,9 @@ env = environment("merge-in-v3", False)
 # ...
 
 # Look at the Performance
-#performance = performance_model(env=env, model=TRPO, model_path="Training models\highway_TRPO\Merging_v3_model_Tuned_TRPO.zip", model_name="TRPO",
-#                                number_of_tests=1, video_name="Merging_v3_TRPO_Modified_Rewards_Tuned", i=4, base_reward=False)
+# number_of_test has to be larger than 1.
+performance = performance_model(env=env, model=TRPO, model_path="Training models\highway_TRPO\Merging_v3_model_Tuned_TRPO.zip", model_name="TRPO",
+                                number_of_tests=2, video_name="Merging_v3_TRPO_Modified_Rewards_Tuned", i=4, base_reward=False)
 
 # Look at parameters of models
 # study = joblib.load("models/TRPO/merge_in_v3/tuning/run_2/study.pkl")
