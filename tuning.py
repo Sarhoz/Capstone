@@ -32,8 +32,9 @@ import torch
 import torch.nn as nn
 
 
+
 # Recommended Changable variables: N_trials, N_TIMESTEPS, N_TRAIN_ENVS, N_EVAL_ENVS, ALGO and ENV_ID
-EXPANSIVE = False
+EXPANSIVE = True
 COUNTED_STATES = [TrialState.COMPLETE, TrialState.RUNNING, TrialState.PRUNED]
 N_TRIALS = 100
 N_JOBS = 1      # way slower training when > 1
@@ -53,7 +54,7 @@ PROGRESS = {
 
 ALGO = "trpo"
 ENV_ID = "merge-in-v3"
-ROOT_PATH = "models/" + ALGO.upper() + "/merge_in_" + ENV_ID.split("-")[2] + "/tuning"
+ROOT_PATH = "models/" + ALGO.upper() + "/merge_in_" + ENV_ID.split("-")[2] + "/tuning" if not EXPANSIVE else "models/" + ALGO.upper() + "/merge_in_" + ENV_ID.split("-")[2] + "/tuning/expansive"
 
 DEFAULT_HYPERPARAMS = {
     "policy": "MlpPolicy",
