@@ -109,7 +109,7 @@ def sample_trpo_params(trial: optuna.Trial, expansive:bool=False) -> Dict[str, A
         batch_size = trial.suggest_categorical("batch_size", [8, 16, 32, 64, 128, 256, 512])    # default = 128
         n_steps = trial.suggest_categorical("n_steps", [8, 16, 32, 64, 128, 256, 512, 1024, 2048])    # default = 2048
         gamma = trial.suggest_categorical("gamma", [0.9, 0.95, 0.98, 0.99, 0.995, 0.999, 0.9999])    # default = 0.99
-        learning_rate = trial.suggest_float("learning_rate", 1e-5, 1, log=True)    # default = 0.001 (1e-3)
+        learning_rate = trial.suggest_float("learning_rate", 1e-5, 0.01, log=True)    # default = 0.001 (1e-3)
         # line_search_shrinking_factor = trial.suggest_categorical("line_search_shrinking_factor", [0.6, 0.7, 0.8, 0.9])    # default = 0.8
         n_critic_updates = trial.suggest_categorical("n_critic_updates", [5, 10, 20, 25, 30])    # default = 10
         cg_max_steps = trial.suggest_categorical("cg_max_steps", [5, 10, 20, 25, 30])    # default = 15

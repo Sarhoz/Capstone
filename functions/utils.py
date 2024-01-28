@@ -2,6 +2,7 @@
 Utility file containing helper functions and custom classes.
 """
 import cv2
+from torch import nn as nn
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -414,26 +415,29 @@ def tuned_reward_models(model: str, env, iterations: int):
 # Best model (has still to be made --> tuning takes a couple of days!)
 def best_model(env, iterations: int):
     model = TRPO("MlpPolicy", env,
-                     policy=None,
-                     schedule=0,
-                     n_steps=0.0,
-                     cg_max_steps=0.0,
-                     cg_damping=0.0,
-                     line_search_shrinking_factor=0.0,
-                     line_search_max_iter=0.0,
-                     n_critic_updates=0.0,
-                     gae_lambda=0.0,
-                     rollout_buffer_class=0.0,
-                     normalize_advantage=False,
-                     policy_kwargs=None,
-                     tensorboard_log="Tensorboard_log/Merging_v3_best_model",
-                     device="cuda",
-                     gamma=0.0,
-                     learning_rate=0.0,
-                     batch_size=0,
-                     verbose=1)
+             learning_rate=0.0002541418949919178,
+             n_steps=1024,
+             batch_size=128,
+             gamma=0.98,
+             cg_max_steps=15,
+             cg_damping=0.1,
+             line_search_shrinking_factor=0.8,
+             line_search_max_iter=10,
+             n_critic_updates=20,
+             gae_lambda=0.95,
+             use_sde=False,
+             sde_sample_freq=-1,
+             normalize_advantage=True,
+             target_kl=0.03,
+             sub_sampling_factor=1,
+             policy_kwargs=None,
+             verbose=1,
+             tensorboard_log="Tensorboard_log/Merging_v4_best_model",
+             seed=None,
+             device='cuda',
+             _init_setup_model=True)
     model.learn(iterations, progress_bar=True)
-    model.save("Training models/highway_TRPO/Merging_v3_model_Best_model")
+    model.save("Training models/highway_TRPO/Merging_v4_model_Best_model")
     return model
 
 # Check the Performance of a model

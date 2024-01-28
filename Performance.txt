@@ -120,3 +120,38 @@ The TRPO model with modified rewards (DiscreteMeteAction)
  The minimum TTC of 500 measurements is: 0.4806813813192376 
 
 
+---------------------- best model ----------------------
+
+
+Best model inside of merging-v3(DiscreteMeteAction) 
+ 
+ The average speed of 500 measurements is: 27.0861982981069 
+ The average total distance of 500 measurements is: 23.1793328266023 
+ The average duration time is of 500 measurements is: 12.88 
+ The collision rate of 500 measurements is: 0.008 
+ The average TTC of 500 measurements is: 5.850104339873702
+ The minimum TTC of 500 measurements is: 0.7364789018282929 
+
+
+
+Best model inside of merging-v4 (DiscreteMeteAction) --- Not Retrained 
+ 
+ The average speed of 500 measurements is: 28.74720425066507 
+ The average total distance of 500 measurements is: 20.483158148233866 
+ The average duration time is of 500 measurements is: 10.712 
+ The collision rate of 500 measurements is: 0.644 
+ The average TTC of 500 measurements is: 4.926458653119926
+ The minimum TTC of 500 measurements is: 0.43529883197355324 
+
+
+
+ Best model inside of merging-v4 (DiscreteMeteAction) --- Retrained
+ 
+ The average speed of 500 measurements is: 23.326493825901828 
+ The average total distance of 500 measurements is: 22.31191864395778 
+ The average duration time is of 500 measurements is: 14.386 
+ The collision rate of 500 measurements is: 0.15 
+ The average TTC of 500 measurements is: 7.642076506513641
+ The minimum TTC of 500 measurements is: 0.6438869146341252 
+
+
